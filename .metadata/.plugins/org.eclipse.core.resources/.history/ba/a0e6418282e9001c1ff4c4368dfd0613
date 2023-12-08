@@ -1,0 +1,619 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
+
+public class SnackManage extends JFrame implements ActionListener, MouseListener, MouseMotionListener {
+	private JTextField tfsnName;
+	private JTextField tfsnPrice;
+
+	private JLabel lblName;
+	private JLabel lblPrice;
+	private int snID;
+
+	private JLabel llogo;
+	private JButton lgExitbtn;
+	private JLabel lbltaste;
+	private JTextField tfTaste;
+	private JLabel lbltp;
+	private JComboBox dpbsntype;
+	private JButton btnOk;
+	private JButton btnexit;
+
+	private String sthead[] = { "간식ID", "종류", "맛", "상표", "가격" };
+	private DefaultTableModel snModel = new DefaultTableModel(sthead, 0);
+
+	private JTable snTb = new JTable(snModel);
+	private JScrollPane snsr = new JScrollPane(snTb);
+
+	stDb db = new stDb();
+	private JRadioButton rdAddSn;
+	private JRadioButton rdEditSn;
+	private JMenuItem stdel;
+	private String imglinklbl;
+	private JLabel snImglbl;
+	private JButton btnsnImg;
+	private JFileChooser fc = new JFileChooser();
+	private JPanel sntitlebarpn;
+	private int pnx;
+	private int pny;
+	public SnackManage(StaffForm staffForm) {
+
+		setDefaultCloseOperation(SnackManage.DISPOSE_ON_CLOSE);
+		setSize(980, 300);
+		setLocationRelativeTo(staffForm);
+//		setExtendedState(MAXIMIZED_BOTH); 창 최대화
+		setUndecorated(true);
+		setLayout(new BorderLayout());
+
+		Sntitlebar();
+		pn();
+		table();
+		west();
+		setVisible(true);
+		tfsnName.requestFocus();
+	}
+	private void west() {
+		JPanel imgpn = new JPanel();
+		imgpn.setLayout(new BorderLayout());
+		imgpn.setPreferredSize(new Dimension(200, 300));
+		snImglbl = new JLabel("");
+		btnsnImg = new JButton("간식사진 삽입");
+		btnsnImg.addActionListener(this);
+		snImglbl.setSize(200,250);
+		
+		imgpn.add(snImglbl, BorderLayout.SOUTH);
+		imgpn.add(btnsnImg, BorderLayout.SOUTH);
+
+		add(imgpn, BorderLayout.WEST);
+	}
+
+	private void table() {
+		// --------팝업메뉴
+		JPopupMenu pmenu = new JPopupMenu();
+		stdel = new JMenuItem("삭제하기");
+		pmenu.add(stdel);
+		stdel.addActionListener(this);
+
+		snsr.setBounds(280, 10, 300, 170);
+		snTb.setComponentPopupMenu(pmenu);
+		snTb.addMouseListener(this);
+
+		try {
+			db.DBlg(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		// 셀 자동 길이조절
+		
+		final TableColumnModel columnModel = snTb.getColumnModel();
+		for (int col = 0; col < snTb.getColumnCount(); col++) {
+			int wd = 50;
+			for (int row = 0; row < snTb.getRowCount(); row++) {
+				TableCellRenderer redd = snTb.getCellRenderer(row, col);
+				Component comp = snTb.prepareRenderer(redd, row, col);
+				wd = Math.max(comp.getPreferredSize().width + 1, wd);
+			}
+			columnModel.getColumn(col).setPreferredWidth(wd);
+		}
+
+		// ------row 컬러 바꾸기
+		snTb.setDefaultEditor(Object.class, null);
+		snTb.setDefaultRenderer(Object.class, new myColorRenderer());
+
+		// 셀 가운데 정렬
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+		TableColumnModel tcm = snTb.getColumnModel();
+		for (int i = 0; i < tcm.getColumnCount(); i++) {
+			tcm.getColumn(i).setCellRenderer(dtcr);
+		}
+		// ------row 컬러 바꾸기
+//		snTb.setDefaultRenderer(Object.class, new myColorRenderer());
+		snTb.setBackground(new Color(171, 3, 228));
+		snTb.setForeground(Color.white);
+
+		// ----multiselect false
+		snTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		// -------------j테이블 컬러 바꾸기
+		snsr.getViewport().setBackground(new Color(76, 1, 101));
+
+		JTableHeader snTbhd = snTb.getTableHeader();
+		snTbhd.setBackground(new Color(76, 1, 101));
+		snTbhd.setForeground(Color.white);
+
+		add(snsr, BorderLayout.EAST);
+	}
+
+	private void Sntitlebar() {
+		sntitlebarpn = new JPanel();
+		sntitlebarpn.setLayout(new BorderLayout());
+		sntitlebarpn.setBackground(new Color(31, 17, 55));
+		sntitlebarpn.addMouseListener(this);
+		sntitlebarpn.addMouseMotionListener(this);
+		
+		lgExitbtn = new JButton("X");
+		lgExitbtn.setBackground(Color.red);
+		lgExitbtn.setForeground(Color.white);
+		lgExitbtn.setFocusPainted(false);
+
+		lgExitbtn.addActionListener(this);
+
+		sntitlebarpn.add(lgExitbtn, BorderLayout.EAST);
+
+		add(sntitlebarpn, BorderLayout.NORTH);
+	}
+	private void pn() {
+
+		JPanel jp = new JPanel();
+		jp.setLayout(null);
+		jp.setBackground(new Color(76, 1, 101));
+
+		ImageIcon logo = new ImageIcon("image/logo/레알로고_최신(로그인폼).png");
+		llogo = new JLabel(logo);
+		jp.add(llogo);
+		llogo.setBounds(5, 0, 270, 60);
+
+		lbltaste = new JLabel("맛");
+		lblName = new JLabel("상표");
+		lblPrice = new JLabel("가격");
+		lbltp = new JLabel("종류");
+
+		ButtonGroup gp = new ButtonGroup();
+
+		// 라이도 버튼
+		rdAddSn = new JRadioButton("추가");
+		rdEditSn = new JRadioButton("수정");
+
+		gp.add(rdAddSn);
+		gp.add(rdEditSn);
+
+		rdAddSn.addActionListener(this);
+		rdEditSn.addActionListener(this);
+
+		tfTaste = new JTextField(15);
+		tfsnName = new JTextField(15);
+		tfsnPrice = new JTextField(15);
+		String sttp[] = { "팝콘", "음료수", "사이드"};
+		dpbsntype = new JComboBox<>(sttp);
+		dpbsntype.setSelectedItem("팝콘");
+		new Font("HY중고딕", Font.BOLD, 15);
+
+		jp.add(lbltaste);
+		jp.add(tfTaste);
+		jp.add(lblName);
+		jp.add(tfsnName);
+		jp.add(lblPrice);
+		jp.add(tfsnPrice);
+		jp.add(lbltp);
+		jp.add(dpbsntype);
+
+		jp.add(rdAddSn);
+		jp.add(rdEditSn);
+		rdAddSn.setOpaque(false);
+		rdEditSn.setOpaque(false);
+		rdAddSn.setForeground(Color.white);
+		rdEditSn.setForeground(Color.white);
+		rdAddSn.setFont(new Font("굴림", Font.BOLD, 12));
+		rdEditSn.setFont(new Font("굴림", Font.BOLD, 12));
+
+		lbltaste.setForeground(Color.white);
+		lbltaste.setBounds(10, 102, 50, 25);
+		lblName.setForeground(Color.white);
+		lblName.setBounds(10, 135, 50, 25);
+		lblPrice.setForeground(Color.white);
+		lblPrice.setBounds(10, 165, 50, 25);
+		tfTaste.setBounds(70, 102, 180, 25);
+		tfsnName.setBounds(70, 135, 180, 25);
+		tfsnPrice.setBounds(70, 165, 180, 25);
+		lbltp.setForeground(Color.white);
+		lbltp.setBounds(10, 70, 50, 25);
+
+		rdAddSn.setBounds(150, 70, 50, 20);
+		rdEditSn.setBounds(200, 70, 50, 20);
+
+		btnOk = new JButton("메뉴추가하기");
+		btnexit = new JButton("닫기");
+
+		btnOk.setBackground(new Color(171, 3, 228));
+		btnOk.setForeground(Color.white);
+		btnOk.setFont(new Font("굴림", Font.BOLD, 15));
+		jp.add(btnOk);
+
+		btnexit.setBackground(new Color(171, 3, 228));
+		btnexit.setForeground(Color.white);
+		btnexit.setFont(new Font("굴림", Font.BOLD, 15));
+		jp.add(btnexit);
+
+		btnOk.addActionListener(this);
+		btnOk.setBounds(20, 200, 130, 25);
+
+		btnexit.addActionListener(this);
+		btnexit.setBounds(170, 200, 130, 25);
+
+		dpbsntype.setBounds(70, 70, 80, 25);
+
+		rdAddSn.setSelected(true);
+
+		add(jp, BorderLayout.CENTER);
+	}
+
+	private class stDb {
+		static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+		// 드라이버 주소
+		static final String DB_URL = "jdbc:mysql://118.46.199.58:3306/movie";
+		// DB접속
+		// localhost 는 접속하려는 데이터베이스 주소를 입력하시면 됩니다.
+		// 3306은 데이터베이스에 접속할때 사용하는 포트 번홍비니다. 설치할때설정한 것
+		// databasename에는 접속하려는 database의 name을 입력해 줍니다.
+		static final String USERNAME = "javapj";
+		static final String PASSWORD = "1234";
+
+		Connection conn = null;
+		java.sql.Statement stmt = null;
+		ResultSet rs = null;
+		boolean delrs;
+		private void DBlg(int a) throws SQLException {
+
+			System.out.print("User Table 접속 : ");
+
+			try {
+				Class.forName(JDBC_DRIVER);
+				// class클래스의 forName()함수를 이용해서 해당클래스를메모리로로드
+				// url, id, password 를 입력하여 데이터페이스에 접속
+				conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+				stmt = conn.createStatement();
+				String sql = null;
+
+				if (conn != null) {
+					System.out.println("성공");
+					switch (a) {
+					case 1: // 간식 조회
+						System.out.println("Select문");
+						sql = "Select * from snack;";
+						rs = stmt.executeQuery(sql);
+
+						if (rs.next()) {
+							sql = "Select * from snack;";
+							rs = stmt.executeQuery(sql);
+							while (rs.next()) {
+								snModel.addRow(new Object[] { rs.getInt(1), rs.getString(2), rs.getString(3),
+										rs.getString(4), rs.getString(5) });
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "등록된 메뉴가 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
+						}
+						break;
+
+					case 2: // 간식 삭제
+						sql = "Select * from snack where snID = " + snID + ";";
+						rs = stmt.executeQuery(sql);
+						if (rs.next()) {
+								sql = "delete from snack where snID = " + snID + ";";
+								delrs = stmt.execute(sql);
+
+								if (delrs) {
+									JOptionPane.showMessageDialog(null, "다시 시도해주세요!", "간식삭제 오류!",
+											JOptionPane.ERROR_MESSAGE);
+								} else {
+									System.out.println("성공");
+									DefaultTableModel resetmd = (DefaultTableModel) snTb.getModel();
+									resetmd.setNumRows(0);
+									db.DBlg(1);
+									tfsnName.setText("");
+									tfTaste.setText("");
+									tfsnPrice.setText("");
+									dpbsntype.setSelectedItem("팝콘");
+									snID = 0;
+									snImglbl.setIcon(null);
+								}
+						}
+						break;
+					case 3: // 신규 등록
+						sql = "Select * from snack;";
+						rs = stmt.executeQuery(sql);
+						while (rs.next()) {
+							if (rs.getString(4).equals(tfsnName.getText())) {
+								JOptionPane.showMessageDialog(null, "중복된 아이디가 있습니다!", "아이디 중복 오류!",
+										JOptionPane.ERROR_MESSAGE);
+								break;
+							} else {
+								System.out.println("insert문");
+								sql = "INSERT INTO snack (sntype,sntaste,snName,snPrice)VALUES ('" + dpbsntype.getSelectedItem() + "','"
+										+ tfTaste.getText()  + "','" + tfsnName.getText() + "','" + tfsnPrice.getText()
+										+ "')";
+								System.out.println(sql);
+								stmt.execute(sql);
+								if (delrs) {
+									JOptionPane.showMessageDialog(null, "다시 시도해주세요!", "간식등록 오류!",
+											JOptionPane.ERROR_MESSAGE);
+								} else {
+									System.out.println("성공");
+									DefaultTableModel resetmd = (DefaultTableModel) snTb.getModel();
+									resetmd.setNumRows(0);
+									db.DBlg(1);
+
+									File dirfile = new File(imglinklbl);
+									System.out.println(imglinklbl);
+									File srcfile = new File("image/snack/" + tfsnName.getText() + ".jpeg");
+									System.out.println("image/snack/" + tfsnName.getText() + ".jpeg");
+									Files.copy(dirfile.toPath(), srcfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+									
+									tfsnName.setText("");
+									tfTaste.setText("");
+									tfsnPrice.setText("");
+									dpbsntype.setSelectedItem("팝콘");
+
+									snImglbl.setIcon(null);
+									JOptionPane.showMessageDialog(null, "간식이 등록되었습니다!", "등록 완료!",
+											JOptionPane.INFORMATION_MESSAGE);
+								}
+							}
+						}
+						break;
+					case 4: // 수정하기
+						sql = "UPDATE snack SET sntype ='" + dpbsntype.getSelectedItem() + "', sntaste='" + tfTaste.getText() + "', snprice='"
+								+ tfsnPrice.getText() + "' WHERE snID = " + snID + ";";
+						System.out.println(sql);
+						delrs = stmt.execute(sql);
+						if (delrs) {
+							JOptionPane.showMessageDialog(null, "다시 시도해주세요!", "간식 수정 오류!", JOptionPane.ERROR_MESSAGE);
+						} else {
+							System.out.println("성공");
+							DefaultTableModel resetmd = (DefaultTableModel) snTb.getModel();
+							resetmd.setNumRows(0);
+							db.DBlg(1);
+							tfsnName.setText("");
+							tfTaste.setText("");
+							tfsnPrice.setText("");
+							dpbsntype.setSelectedItem("팝콘");
+							snID = 0;
+							JOptionPane.showMessageDialog(null, "정보가 수정되었습니다.", "간식 수정",
+									JOptionPane.INFORMATION_MESSAGE);
+							snImglbl.setIcon(null);
+						}
+
+						break;
+					default:
+						System.out.println("4");
+						break;
+					}
+				} else {
+					System.out.println("실패");
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("class not found exection");
+			} catch (Exception e) {
+				System.out.println("sql exception : " + e.getMessage());
+			} finally {
+				rs.close();
+				stmt.close();
+				conn.close();
+			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();;
+		if (obj == btnOk) {
+			if (btnOk.getText().equals("메뉴추가하기")) {
+				if (tfsnName.getText().equals("") || tfTaste.getText().equals("") || tfsnPrice.getText().equals("") || imglinklbl == null) {
+					JOptionPane.showMessageDialog(null, "빈칸을 모두 채워주세요!", "등록 오류!", JOptionPane.ERROR_MESSAGE);
+				} else {
+					try {
+						db.DBlg(3);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			} else if (btnOk.getText().equals("수정하기")) {
+				if (snID == 0) {
+					JOptionPane.showMessageDialog(null, "수정하려는 간식을 선택해주세요!", "간식선택", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					if (tfsnName.getText().equals("") || tfTaste.getText().equals("") || tfsnPrice.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "이미지 혹은 빈칸을 모두 채워주세요!", "등록 오류!", JOptionPane.ERROR_MESSAGE);
+					} else {
+						try {
+							db.DBlg(4);
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		} else if (obj == btnexit) {
+			dispose();
+		} else if (obj == lgExitbtn) {
+			dispose();
+		} else if (obj == rdAddSn) {
+			btnOk.setText("메뉴추가하기");
+			btnsnImg.setText("간식이미지 삽입");
+			tfsnName.setText("");
+			tfTaste.setText("");
+			tfsnPrice.setText("");
+			dpbsntype.setSelectedItem("팝콘");
+			snImglbl.setIcon(null);
+			tfsnName.setEditable(true);
+
+		} else if (obj == rdEditSn) {
+			btnOk.setText("수정하기");
+			btnsnImg.setText("이미지수정");
+		} else if (obj == stdel) {
+			int col = 0;
+			int row = snTb.getSelectedRow();
+			String vu = snTb.getModel().getValueAt(row, col).toString();
+			System.out.println(vu);
+
+			int ms = JOptionPane.showConfirmDialog(null, "정말로 삭제하시겠습니까?", "삭제", JOptionPane.OK_CANCEL_OPTION);
+			if (ms == JOptionPane.OK_OPTION) {
+				snID = Integer.parseInt(vu);
+				System.out.println(snID);
+				try {
+					db.DBlg(2);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			} else {
+				// 아무일도 일어나지 않는다..
+			}
+		}else if (obj == btnsnImg) {
+			// 파일 주소값 가져오기
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.addChoosableFileFilter(new FileNameExtensionFilter("jpg", "jpg"));
+			fc.addChoosableFileFilter(new FileNameExtensionFilter("jpeg", "jpeg"));
+			int rs = fc.showOpenDialog(this);
+
+			if (rs == JFileChooser.APPROVE_OPTION) {
+
+				imglinklbl = (fc.getSelectedFile().getAbsolutePath());
+				File selfile = fc.getSelectedFile();
+				String path = selfile.getAbsolutePath();
+				snImglbl.setSize(200, 250);
+				snImglbl.setIcon(resize(path));
+			}
+		}
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if(e.getSource() == sntitlebarpn) {
+			pnx = e.getX();
+			pny = e.getY();
+
+		}else {
+			Point point = e.getPoint();
+			int currentRow = snTb.rowAtPoint(point);
+			snTb.setRowSelectionInterval(currentRow, currentRow);
+			int row = snTb.getSelectedRow();
+			int col = 0;
+			String vu = snTb.getModel().getValueAt(row, col).toString();
+			snID = Integer.parseInt(vu);
+			System.out.println(vu + " " + snID);
+
+			if (rdAddSn.isSelected()) {
+				// 아무것도..
+			} else {
+				tfTaste.setText(snTb.getModel().getValueAt(row, 2).toString());
+				tfsnName.setText(snTb.getModel().getValueAt(row, 3).toString());
+				tfsnPrice.setText(snTb.getModel().getValueAt(row, 4).toString());
+				dpbsntype.setSelectedItem(snTb.getModel().getValueAt(row, 1).toString());
+				snImglbl.setSize(200,250);
+				snImglbl.setIcon(resize("image/Snack/"+tfsnName.getText()+".jpeg"));
+			}	
+		}	
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(e.getSource() == sntitlebarpn) {
+			pnx = e.getX();
+			pny = e.getY();
+
+		}else {
+			int col = 0;
+			int row = snTb.getSelectedRow();
+			String vu = snTb.getModel().getValueAt(row, col).toString();
+			snID = Integer.parseInt(vu);
+			System.out.println(vu + " " + snID);
+			if (rdAddSn.isSelected()) {
+				// 아무것도..
+			} else {
+				tfTaste.setText(snTb.getModel().getValueAt(row, 2).toString());
+				tfsnName.setText(snTb.getModel().getValueAt(row, 3).toString());
+				tfsnPrice.setText(snTb.getModel().getValueAt(row, 4).toString());
+				dpbsntype.setSelectedItem(snTb.getModel().getValueAt(row, 1).toString());
+				snImglbl.setSize(200,250);
+				snImglbl.setIcon(resize("image/Snack/"+tfsnName.getText()+".jpeg"));
+			}	
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		Object obj = e.getSource();
+		if(obj == sntitlebarpn) {
+			
+			int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
+			int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
+
+			this.setLocation((x-pnx), (y-pny));
+		}
+		
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	//이미지 label 사이즈에 맞춰 자동으로 사이즈 print
+	public ImageIcon resize(String imgPath) {
+		ImageIcon path = new ImageIcon(imgPath);
+		Image img = path.getImage();
+		Image newimg = img.getScaledInstance(snImglbl.getWidth(), snImglbl.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon image = new ImageIcon(newimg);
+
+		return image;
+	}
+
+}

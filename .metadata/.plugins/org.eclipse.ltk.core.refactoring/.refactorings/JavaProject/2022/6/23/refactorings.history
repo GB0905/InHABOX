@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;set.BasicSet&apos; to &apos;PanelSet&apos;&#x0D;&#x0A;- Original project: &apos;JavaProject&apos;&#x0D;&#x0A;- Original element: &apos;set.BasicSet&apos;&#x0D;&#x0A;- Renamed element: &apos;set.PanelSet&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;BasicSet&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;set{BasicSet.java[BasicSet" matchStrategy="1" name="PanelSet" qualified="false" references="true" similarDeclarations="false" stamp="1654344954676" textual="false" version="1.0"/>
+</session>

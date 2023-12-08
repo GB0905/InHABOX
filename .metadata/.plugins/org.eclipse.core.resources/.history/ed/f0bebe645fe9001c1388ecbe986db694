@@ -1,0 +1,100 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+public class PayMent extends JFrame {
+	
+	private Container c;
+	private JLabel text;
+	private long start = System.currentTimeMillis();
+	private int time = 5000;
+	private SnackMenu SK;
+	private int count = 0;
+	private JPanel Receipt;
+	private JButton checkBtn;
+
+	public PayMent(SnackMenu sk) {
+		
+		this.SK = sk;
+		
+		setLocationRelativeTo(null);
+		setTitle("결제창");
+		setSize(800, 400);
+		
+		
+		c = getContentPane();
+		c.setLayout(new BorderLayout());
+		ShowFrame();
+		
+		
+		
+		setVisible(true);
+	}
+	
+	public void ShowFrame() {
+		text = new JLabel();
+		Font font1 = new Font("맑은고딕",Font.ITALIC, 20);
+		text.setFont(font1);
+		text.setHorizontalAlignment(JLabel.CENTER);
+		c.add(text);
+		
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			
+			private JPanel Receipt;
+			private JButton checkBtn;
+
+			@Override
+			public void run() {
+				count ++;
+				if(count < 5 ) {
+					text.setText("결제중...");
+				}else if(count >= 5 && count <= 8) {
+					System.out.println("banana");
+					text.setText("결제 완료되었습니다.");
+				}else if(count == 9){
+					text.setText("");
+					
+					
+					System.out.println("간식 아이디: " + SK.getOrderId());
+				}else {
+					timer.cancel(); // 타이머 종
+				}
+				
+			}
+		};
+		
+		timer.schedule(task, 1000, 1000);
+	}
+	
+	
+	public void showReceipt() {
+		
+		
+		
+		
+		
+		Receipt = new JPanel();
+		Receipt.setLayout(new FlowLayout());
+		
+		checkBtn = new JButton("확인");
+		
+		Receipt.add(checkBtn);
+		c.add(Receipt, BorderLayout.CENTER);
+	}
+	
+}
+

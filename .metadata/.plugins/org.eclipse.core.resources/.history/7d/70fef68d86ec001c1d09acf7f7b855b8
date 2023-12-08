@@ -1,0 +1,170 @@
+package LUH_201945022.movie;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+
+import LUH_201945022.frame.*;
+import LUH_201945022.set.*;
+
+public class SelectTime extends PanelSet implements ActionListener {
+
+///////////////////////////////////////////////////////////////	
+// 변수 선언
+	private int btnNum = 7;
+	
+	int movNum;
+	String name;
+	
+///////////////////////////////////////////////////////////////	
+// 생성자
+	public SelectTime(Object[] a, MainPanel main) {
+		this.main = main;
+		main.st = this;
+		
+		selMovie = main.getSelMovie();
+		selMovie = (Movie) a[2];
+		
+		movPath = main.getMovPath();
+		
+		setBackground(purpledark);
+		setLayout(gbl);
+		setGbc();
+
+		JPanel timelist = new JPanel();
+		GridBagLayout gbl1 = new GridBagLayout();
+		timelist.setLayout(gbl1);
+		timelist.setBackground(purplemid);
+		GridBagConstraints gbc1 = new GridBagConstraints();
+		setGbc(gbc1);
+		
+		btnNum = selMovie.getRunId().length;
+		btn = creBtn(btnNum);
+
+		gbc1.weightx = 1;
+//		gbc.anchor = GridBagConstraints.NORTH;
+		gbc1.fill = GridBagConstraints.BOTH;
+		
+		for( int i = 0; i < btnNum; i++ ){
+			btn[i].setText("  " + (i + 1) + "." 
+				+ "   |   " + selMovie.getName() 
+				+ "   |   " + selMovie.getDate(i)
+				+ "   |   " + selMovie.getTime(i)
+				+ "   |   " + selMovie.getRoom(i) + "관" 
+			  /*+ "   |   " + "140 분"
+				+ "   |   " + "180 석"*/);
+			btn[i].setFont(this.a);
+			btn[i].addActionListener(this);
+			
+			gbc1.gridy = i;
+			gbl1.setConstraints(btn[0], gbc1);
+			timelist.add(btn[i]);
+			btn[i].setHorizontalAlignment(SwingConstants.LEFT);
+			if ( i + 1 == btnNum ) {
+				JLabel empty = new JLabel();
+				gbc1.weighty = 1;
+				gbc1.gridy = i + 1;
+				gbl1.setConstraints(empty, gbc1);
+				timelist.add(empty);
+			}
+		}
+		
+		setGbc();
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(10, 100, 10, 0);
+		gbl.setConstraints(timelist, gbc);
+		add(timelist);
+	}
+
+///////////////////////////////////////////////////////////////
+// 메서드
+	// 포스터 레이블에 레이블 추가하기
+	void setPlLbl(int i, JLabel name) {
+		name.setBorder(new LineBorder(Color.white, 5));
+		name.setFont(a);
+		name.setHorizontalAlignment(SwingConstants.CENTER);
+		name.setOpaque(true);
+		name.setBackground(Color.white);
+		main.pl.getGbc().weighty = 0;
+		main.pl.getGbc().gridy = i;
+		main.pl.getGbc().fill = GridBagConstraints.HORIZONTAL;
+		main.pl.getGbl().setConstraints(name, main.pl.getGbc());
+		main.pl.add(name);
+	}
+	
+///////////////////////////////////////////////////////////////
+// 리스너
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		for (int i = 0; i < btnNum; i++) {
+			if (obj == btn[i]) {
+				int selRunId = selMovie.getRunId(i);
+				int selRoom = selMovie.getRoom(i);
+				String selTime =  selMovie.getTime(i);
+				String selDate =  selMovie.getDate(i);
+				
+				selMovie.setSelRunId(selRunId);
+				selMovie.setSelRoom(selRoom);
+				selMovie.setSelTime(selTime);
+				selMovie.setSelDate(selDate);
+				
+				ResultSet rs = null;
+				Database.init();
+				try {
+					// 선택 가능한 좌석 확인
+					String sql = "select * from mvtime where RunningId = " + selMovie.getSelRunId();
+					rs = Database.getResultSet(sql);
+					if(rs.next()) {
+						// 1 상영 번호
+						// 2 상영 날짜
+						// 3 상영 날짜
+						// 4 상영 시간
+						System.out.println(rs.getString(5));
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} finally {
+					try {
+						rs.close();
+						Database.conn.close();
+						Database.stmt.close();
+						System.out.println("DB 연결 종료");
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
+				
+				setVisible(false);
+				SelectSeat ss = new SelectSeat(main);
+				ss.setPreferredSize(size13);
+				main.add(ss);
+				
+
+				
+				
+//				selRunId = selMovie.getSelRunId();
+//				selRoom = selMovie.getRoom(i);
+//				selTime = selMovie.getTime(i);
+//				
+//				
+//				
+//				System.out.println(selRoom);
+//				System.out.println(selTime);
+				
+				JLabel selectedTime = new JLabel(selRoom + "관" + " | " + selTime);
+				setPlLbl(2, selectedTime);
+				selectedTime.addMouseListener(main.pl);
+				main.pl.selectedTime = selectedTime;
+				revalidate();
+			}
+		}
+	}
+
+///////////////////////////////////////////////////////////////
+}

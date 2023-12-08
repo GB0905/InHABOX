@@ -1,0 +1,188 @@
+package GGB_201945025;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+import LUH_201945022.frame.MainPanel;
+
+public class Inquiry extends JPanel implements ActionListener, KeyListener {
+
+///////////////////////////////////////////////////////////////
+// 변수 선언
+	JButton search;
+	JPanel midPanel;
+	JTextField tf;
+	MainPanel main;
+	int i = 0;
+	Object[] movinfo;
+///////////////////////////////////////////////////////////////
+// 생성자
+	public Inquiry(MainPanel a) {
+		main = a;
+		main.iq = this;
+		setLayout(new GridLayout(3, 1));
+		setBackground(Color.BLACK);
+
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		JLabel logo = new JLabel(new ImageIcon("images/로고.jpg"));
+		topPanel.add(logo);
+		topPanel.setBackground(new Color(75, 52, 149));
+		add(topPanel);
+
+		midPanel = new JPanel();
+		midPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 25, 0));
+		midPanel.setBackground(new Color(75, 52, 149));
+		tf = new JTextField();
+		tf.setHorizontalAlignment(JTextField.CENTER);
+		tf.setPreferredSize(new Dimension(1100, 260));
+		tf.setFont(new Font("궁서", Font.BOLD, 100));
+		tf.addKeyListener(this);
+		search = new JButton(new ImageIcon("images/btnimg/1/검색1.png"));
+		search.setRolloverIcon(new ImageIcon("images/btnimg/1/검색2.png"));
+		search.setPressedIcon(new ImageIcon("images/btnimg/1/검색3.png"));
+		search.setPreferredSize(new Dimension(262, 260));
+		search.setBorderPainted(false);
+		search.setContentAreaFilled(false);
+		search.setFocusPainted(false);
+		search.addActionListener(this);
+		midPanel.add(tf);
+		midPanel.add(search);
+		add(midPanel);
+
+		JPanel botPanel = new JPanel();
+		botPanel.setBackground(new Color(75, 52, 149));
+		add(botPanel);
+	}
+
+///////////////////////////////////////////////////////////////
+// 메서드
+
+///////////////////////////////////////////////////////////////
+// 리스너
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == search) {
+			if (tf.getText().length() != 8) {
+				JOptionPane.showMessageDialog(this.getRootPane(), "영화 코드는 8자리 숫자 입니다.", "", JOptionPane.WARNING_MESSAGE);
+			} else {
+				stDba db = new stDba();
+				try {
+					db.stDBa();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		revalidate();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (i < 8) {
+			if (((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)) {
+				e.consume(); // 숫자 아니면 입력 안받기
+				JOptionPane.showMessageDialog(this.getRootPane(), "영화 코드는 8자리 숫자 입니다.", "", JOptionPane.WARNING_MESSAGE);
+			}
+		}
+	}
+
+///////////////////////////////////////////////////////////////
+// db
+	class stDba {
+		static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+		// 드라이버 주소
+		static final String DB_URL = "jdbc:mysql://118.46.199.58:3306/movie";
+		// DB접속
+		// localhost 는 접속하려는 데이터베이스 주소를 입력하시면 됩니다.
+		// 3306은 데이터베이스에 접속할때 사용하는 포트 번호입니다. 설치할때설정한 것
+		// databasename에는 접속하려는 database의 name을 입력해 줍니다.
+
+		static final String USERNAME = "javapj";
+		static final String PASSWORD = "1234";
+
+		Connection conn = null;
+		java.sql.Statement stmt = null;
+//	      result insrs;
+		ResultSet insrs;
+
+		public void stDBa() throws SQLException {
+			System.out.print("Movie DB 접속 : ");
+			try {
+				Class.forName(JDBC_DRIVER);
+				// class클래스의 forName()함수를 이용해서 해당클래스를메모리로로드
+				// url, id, password 를 입력하여 데이터페이스에 접속
+				conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+				stmt = conn.createStatement();
+				String sql = null;
+				if (conn != null) {
+					System.out.println("접속 성공");
+					// 영화 조회
+					System.out.println("영화 조회 : ...");
+					
+					
+					sql = "select * from ticket where BookId ='" + tf.getText() + "'";
+					insrs = stmt.executeQuery(sql);
+					if (insrs.next()) {
+						JOptionPane.showMessageDialog(null, "예약확인", "조회", JOptionPane.INFORMATION_MESSAGE);
+						ArrayList<String> i = new ArrayList<String>();
+						i.add(insrs.getString(1));
+						i.add(insrs.getString(2));
+						i.add(insrs.getString(3));
+						i.add(insrs.getString(4));
+//						i.add(insrs.getString(5));
+//						i.add(insrs.getString(6));
+//						i.add(insrs.getString(7));
+//						i.add(insrs.getString(8));
+						System.out.println(i);
+						main.iq.setVisible(false);
+						TicketPrint a = new TicketPrint();
+						a.setPreferredSize(new Dimension(1440, 810));
+						main.tp = a;
+						main.add(main.tp);
+						
+						main.revalidate();
+					} else {
+						JOptionPane.showMessageDialog(null, "예약된 영화가 없습니다.", "조회", JOptionPane.ERROR_MESSAGE);
+					}
+
+				} else {
+					System.out.println("실패");
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println(e.getMessage());
+				System.out.println("class not found exection");
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println("sql exception : " + e.getMessage());
+			} finally {
+				insrs.close();
+				stmt.close();
+				conn.close();
+				System.out.println("끝");
+			}
+		}
+	}
+
+///////////////////////////////////////////////////////////////
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	public JTextField getTf() {
+		return tf;
+	}
+}

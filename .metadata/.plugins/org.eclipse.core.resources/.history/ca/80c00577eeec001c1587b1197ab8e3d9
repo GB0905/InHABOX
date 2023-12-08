@@ -1,0 +1,116 @@
+package LUH_201945022.panel;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+
+import LUH_201945022.set.*;
+import LUH_201945022.frame.*;
+import LUH_201945022.panel.*;
+
+public class PosterLabel extends PanelSet implements MouseListener {
+
+///////////////////////////////////////////////////////////////
+// 변수 선언	
+	public JLabel[] lbl = new JLabel[2];
+	public JLabel acCnt, selectedTime, seatNumLbl;
+	public Movie selMovie;
+	
+///////////////////////////////////////////////////////////////
+// 생성자	
+	public PosterLabel(Object[] a, MainPanel main) {
+		this.main = main;
+		main.pl = this;
+		
+		lbl[0] = new JLabel();
+		lbl[0] = (JLabel) a[0];
+		lbl[1] = new JLabel();
+		lbl[1] = (JLabel) a[1];
+		
+		selMovie = main.getSelMovie();
+		
+		setGbc();
+		setBackground(purplemid);
+		setLayout(gbl);
+
+		setBorder(wl);
+
+		gbc.insets = new Insets(10, 30, 10, 30);
+		gbc.weightx = 1;
+		gbl.setConstraints(lbl[0], gbc);
+		lbl[0].addMouseListener(this);
+		lbl[0].setBorder(new LineBorder(Color.white, 5));
+
+		gbc.gridy = 1;
+		lbl[1].setOpaque(true);
+		lbl[1].setBackground(Color.white);
+		lbl[1].setForeground(Color.black);
+		lbl[1].setBorder(new LineBorder(Color.white, 5));
+		lbl[1].addMouseListener(this);
+		gbl.setConstraints(lbl[1], gbc);
+
+		gbc.gridy = 7;
+		gbc.weighty = 1;
+		JLabel empty = new JLabel();
+		gbl.setConstraints(empty, gbc);
+		
+		add(lbl[0]);
+		add(lbl[1]);
+		add(empty);
+	}
+
+///////////////////////////////////////////////////////////////
+// 메서드
+
+///////////////////////////////////////////////////////////////
+// 리스너
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object obj = e.getSource();
+		if(main.ss!=null)
+			main.ss.setVisible(false);
+		if(main.st!=null)
+			main.st.setVisible(false);
+		if(main.sp!=null)
+			main.sp.setVisible(false);
+		if(main.pl.acCnt != null) {
+			main.pl.acCnt.setVisible(false);
+			main.pl.seatNumLbl.setVisible(false);
+		}
+		if(obj == lbl[0] || obj == lbl[1]) {
+			setVisible(false);
+			main.sm = new SelectMovie(main);
+			main.sm.setPreferredSize(fullsize);
+			main.add(main.sm);
+		} else if(obj == selectedTime) {
+			main.st.setVisible(true);
+			if(main.pl.selectedTime != null)
+				main.pl.selectedTime.setVisible(false);
+		} else if(obj == acCnt || obj == seatNumLbl) {
+			main.ss.setVisible(true);
+			main.ss.btn[2].setEnabled(true);
+		}
+		main.revalidate();
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+///////////////////////////////////////////////////////////////
+
+}

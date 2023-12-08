@@ -1,0 +1,105 @@
+package temp;
+
+import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+
+import LUH_201945022.set.Database;
+
+public class dsfadsfaasdf implements ItemListener {
+	JCheckBox[] seatCheck;
+
+	dsfadsfaasdf() {
+		ArrayList<String> selSeat = new ArrayList<>();
+		Database.init();
+		String sql = "select seat from ticket where runningid = 39";
+		ResultSet rs = Database.getResultSet(sql);
+		try {
+			while(rs.next())
+				selSeat.add(rs.getString(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			rs.close();
+			Database.conn.close();
+			Database.stmt.close();
+			System.out.println("DB 연결 종료");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		String strData = "hello^투케이^TWOK";
+		String arr[] = strData.split("\\^");
+		
+		System.out.println(selSeat);		// 이미 예약된 좌석
+		selSeat.sort(Comparator.reverseOrder());
+		String seat = String.join(",", selSeat);
+		
+		System.out.println(seat);
+		
+		
+		String[] seatName = new String[45];
+		ArrayList<JCheckBox> seatList = new ArrayList<>();
+		seatCheck = new JCheckBox[45];
+		
+		for(int i = 0; i < 45; i++) {
+			seatName[i] = new String();
+			if (i / 9 == 0) {
+				seatName[i] = "a" + (i % 9 + 1);
+			} else if (i / 9 == 1) {
+				seatName[i] = "b" + (i % 9 + 1);
+			} else if (i / 9 == 2) {
+				seatName[i] = "c" + (i % 9 + 1);
+			} else if (i / 9 == 3) {
+				seatName[i] = "d" + (i % 9 + 1);
+			} else {
+				seatName[i] = "e" + (i % 9 + 1);
+			}
+			System.out.println(seatName[i]);
+		}
+		for(int i = 0; i < 45; i++) {
+			for(int j = 0; j < selSeat.size() - 1; j++) {
+				if(seatName[i].equals(selSeat.get(j)))
+					seatName[i] = "xxx";
+			}
+			System.out.println(seatName[i]);
+		}
+		
+		
+		
+		int i =0;
+		for (String a : seatName) {
+			seatCheck[i] = new JCheckBox();
+			seatCheck[i].setName(a);
+			seatCheck[i].setText(a);
+			seatCheck[i].setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+			seatCheck[i].setIcon(new ImageIcon("images/btnimg/seat/좌석OFF.png"));
+			seatCheck[i].setSelectedIcon(new ImageIcon("images/btnimg/seat/좌석ON.png"));
+			seatCheck[i].setEnabled(false);
+			seatCheck[i].addItemListener(this);
+			
+			seatList.add(seatCheck[i]);
+			
+			i++;
+		}
+		System.out.println(seatList);
+	}
+	public static void main(String[] args) {
+		dsfadsfaasdf a = new dsfadsfaasdf();
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

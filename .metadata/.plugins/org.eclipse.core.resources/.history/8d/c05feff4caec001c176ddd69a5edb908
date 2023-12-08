@@ -1,0 +1,93 @@
+package GGB_201945025;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+public class Printing extends JFrame { 
+	
+	private JLabel text;
+	Container c;
+	
+	public Printing() {
+		setSize(500, 300);
+		setTitle("INHA MOVIE");
+		setLocationRelativeTo(null);
+		
+		c = getContentPane();
+		
+		text = new JLabel();
+		Font font1 = new Font("맑은고딕", Font.ITALIC, 20);
+		text.setFont(font1);
+		text.setHorizontalAlignment(JLabel.CENTER);
+		c.add(text);
+		
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			private JButton closeBtn;
+			private int count = 0;
+			
+			@Override
+			public void run() {
+				count ++;
+				if (count <= 2) {
+					text.setText("결제중...");
+				} else if (count >= 2 && count <= 4) {
+					text.setText("결제 완료되었습니다.");
+				} else if (count == 5) {
+					text.setText("");
+				} else {
+					timer.cancel(); // 타이머 종료
+				}
+			}
+		};
+		
+		timer.schedule(task, 1000, 1000);
+		setVisible(true);
+	}
+	
+//	public void changShow() {
+//		setLocationRelativeTo(SK);
+//		setLayout(new BorderLayout());
+//
+//		header = new JPanel();
+//		header.setLayout(new BorderLayout());
+//		header.setPreferredSize(new Dimension(400, 90));
+//		header.setBackground(new Color(75, 52, 149));
+//
+//		ImageIcon I_receipt = new ImageIcon("images/GYH/receipt.png");
+//		Image I_receipt_img = I_receipt.getImage();
+//		Image New_I_receipt_img = I_receipt_img.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+//		ImageIcon newreceiptIcon = new ImageIcon(New_I_receipt_img);
+//
+//		Font font1 = new Font("맑은고딕", Font.BOLD, 23);
+//		JLabel title = new JLabel("Cart", newreceiptIcon, SwingConstants.CENTER);
+//		title.setFont(font1);
+//		title.setForeground(Color.WHITE);
+//		header.add(title);
+//
+//		body = new JPanel();
+//		body.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+//
+//	}
+	public static void main(String[] args) {
+		Printing a = new Printing();
+	}
+}

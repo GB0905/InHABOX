@@ -1,0 +1,75 @@
+1652446292937	Rename field 'maFrame'
+1652446317241	Rename field 'headPanel'
+1652446344339	Rename field 'container'
+1652446367798	Rename field 'cns'
+1652446618528	Extract method 'setpanelCenter'
+1652446656575	Rename field 'panel'
+1652446706170	Rename field 'panel1'
+1652446731478	Extract method 'setpanelWest'
+1652447142623	Rename method 'setpanelCenter'
+1652447148750	Rename method 'setpanelWest'
+1652449893972	Extract method 'setBtn1'
+1652449905330	Extract method 'setBtn2'
+1652449914480	Extract method 'setBtn3'
+1652450236394	Move file
+1652450711434	Extract method 'setLocation'
+1652452830037	Delete element
+1652452841921	Delete element
+1652452859868	Rename type 'asdfasdf'
+1652454009548	Delete element
+1652454014167	Copy compilation unit
+1652454798090	Rename method 'setTicket'
+1652457844488	Copy compilation unit
+1652457856481	Rename type 'TicketBuy_Rea'
+1652458112746	Rename field 'grid'
+1652458122915	Rename field 'grid'
+1652469023780	Rename field 'gbr'
+1652472620845	Move compilation unit
+1652472980204	Copy compilation unit
+1652474367774	Copy compilation unit
+1652475497841	Copy compilation unit
+1652475633712	Rename type 'TicketBuy_Real'
+1652475641344	Copy compilation unit
+1652475779063	Copy compilation unit
+1652476407522	Rename field 'mainFrame'
+1652479266314	Rename field 'mainFrame'
+1652480044196	Rename field 'mainButton'
+1652480049817	Rename field 'posterSlide'
+1652480055620	Rename field 'posterSlide1'
+1652480711768	Copy compilation unit
+1652480744790	Rename field 'frame'
+1652482482822	Rename field 'posterSlide'
+1652487522702	Rename resource 'image'
+1652488762106	Copy compilation unit
+1652488821884	Rename field 'frame'
+1652488905326	Rename field 'mainButton'
+1652488926497	Rename field 'posterSlide'
+1652514188772	Copy compilation unit
+1652514266084	Copy compilation unit
+1652514312245	Copy packages
+1652514397421	Delete elements
+1652514405484	Copy compilation unit
+1652514488953	Copy package
+1652514492917	Delete element
+1652514496983	Copy compilation unit
+1652514521299	Copy compilation unit
+1652514565681	Copy compilation unit
+1652518566600	Rename type 'setPanel'
+1652519126985	Rename type 'mine'
+1652529338702	Copy compilation unit
+1652530719991	Rename field 'btnNum'
+1652534016316	Rename field 'BTNNUM'
+1652534023102	Rename field 'ㅠ수ㅜㅕㅡ'
+1652534070551	Rename field 'POSTERNUM'
+1652534077302	Rename field 'ㅔㅐㄴ수ㅕㅡ'
+1652535079635	Move file
+1652535080951	Move file
+1652535231211	Rename field 'i'
+1652535266877	Rename field 'l'
+1652536001577	Rename field 'frame'
+1652536064554	Rename field 'mainButton'
+1652544736042	Copy compilation unit
+1652544741951	Move compilation unit
+1652544830370	Rename field 'mainButton'
+1652544838588	Rename field 'mainPoster'
+1652551156259	Copy compilation unit

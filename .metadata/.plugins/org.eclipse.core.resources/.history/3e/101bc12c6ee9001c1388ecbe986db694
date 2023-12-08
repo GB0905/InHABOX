@@ -1,0 +1,160 @@
+package set;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Insets;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import inquiry.*;
+import movie.*;
+import frame.*;
+import set.*;
+
+public class PanelSet extends JPanel {
+	
+///////////////////////////////////////////////////////////////
+//변수 선언	
+	protected MainPanel main;
+	
+	protected LineBorder wl = new LineBorder(Color.white, 3);
+	
+	protected Font a = new Font("맑은 고딕", Font.BOLD, 20);
+	protected Font b = new Font("맑은 고딕", Font.BOLD, 23);
+	protected Font c = new Font("맑은 고딕", Font.BOLD, 25);
+	
+	protected Color clear = new Color(255, 0, 0, 0);
+	protected Color purplelight = new Color(99, 69, 196);
+	protected Color purplemid = new Color(75, 52, 149);
+	protected Color purpledark = new Color(60, 42, 120);
+	
+	protected JButton[] btn;
+	protected JLabel[] lbl;
+	protected JPanel[] pan;
+	
+	protected String path = "images/poster";
+	protected ImageIcon[] poster;
+
+	protected GridBagLayout gbl = new GridBagLayout();
+	public GridBagConstraints gbc;
+
+	protected int screenWidth = 1600;
+	protected int screenHeight = 900;
+	protected Dimension screenSize = new Dimension(screenWidth, screenHeight);
+	
+	protected Dimension fullsize = new Dimension(screenWidth * 18 / 20, screenHeight * 18 / 20);
+	protected Dimension size13 = new Dimension(screenWidth * 13 / 20, screenHeight * 18 / 20);
+	protected Dimension size5 = new Dimension(screenWidth * 5 / 20, screenHeight * 18 / 20);
+	protected Dimension size11 = new Dimension(screenWidth * 11 / 20, screenHeight * 18 / 20);
+	protected Dimension size7 = new Dimension(screenWidth * 7 / 20, screenHeight * 18 / 20);
+	
+	///////////////////////
+	protected Movie[] movList;
+	protected int movCnt;
+	///////////////////////
+
+///////////////////////////////////////////////////////////////
+// 메서드
+	public PanelSet() throws HeadlessException {
+		super();
+	}
+
+	protected void setGbc() {
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(0, 0, 0, 0);
+	}
+	
+	protected JPanel[] crePane(int num) {
+		JPanel[] pn = new JPanel[num];
+		for (int i = 0; i < num; i++) {
+			pn[i] = new JPanel();
+		}
+		return pn;
+	}
+	
+	protected JButton[] creBtn(int num) {
+		JButton[] bt = new JButton[num];
+		for (int i = 0; i < num; i++) {
+			bt[i] = new JButton();
+		}
+		return bt;
+	}
+
+	protected JLabel[] creLbl(int num) {
+		JLabel[] lb = new JLabel[num];
+		for (int i = 0; i < num; i++) {
+			lb[i] = new JLabel();
+		}
+		return lb;
+	}
+
+	protected ImageIcon imageSetSize(ImageIcon icon, double i, double j) {
+		Image img1st = icon.getImage();
+		Image img2nd = img1st.getScaledInstance((int) i, (int) j, java.awt.Image.SCALE_SMOOTH);
+		icon = new ImageIcon(img2nd);
+		return icon;
+	}
+
+///////////////////////////////////////////////////////////////
+// 버튼 이미지 세팅
+	protected ImageIcon btnImageSetSize(ImageIcon icon, int i, int u) {
+		Image img1st = icon.getImage();
+		Image img2nd = img1st.getScaledInstance(i * 2, i, java.awt.Image.SCALE_SMOOTH);
+		if(u == 0) {
+			img2nd = img1st.getScaledInstance(i * 5, i * 2, java.awt.Image.SCALE_SMOOTH);
+		} else if(u == 1){
+			img2nd = img1st.getScaledInstance(i, i, java.awt.Image.SCALE_SMOOTH);
+		} else {
+			img2nd = img1st.getScaledInstance(i * 2, i, java.awt.Image.SCALE_SMOOTH);
+		}
+		icon = new ImageIcon(img2nd);
+		return icon;
+	}
+	
+	protected void setBtn(JButton asd, String s, int i, int u) {
+		asd.setIcon(imageSetSize(
+				new ImageIcon("images/btnimg/"+ s + 1 + ".png"), i, u));
+		asd.setRolloverIcon(imageSetSize(
+				new ImageIcon("images/btnimg/"+ s + 2 + ".png"), i, u));
+		asd.setPressedIcon(imageSetSize(
+				new ImageIcon("images/btnimg/"+ s + 3 + ".png"), i, u));
+		asd.setBorderPainted(false);
+		asd.setContentAreaFilled(false);
+		asd.setFocusPainted(false);
+	}
+	
+///////////////////////////////////////////////////////////////
+	
+//	protected void setImage(double baseSize) {
+//		poster = new ImageIcon[fileCnt];
+//		int i = 0;
+//		for (String loc : movPath) {
+//			poster[i] = new ImageIcon(loc);
+//			poster[i] = imageSetSize(poster[i], baseSize, baseSize * 1.42);
+//			i++;
+//		}
+//	}
+	
+	protected ImageIcon setImage(int i, double baseSize) {
+		ImageIcon a = movList[i].getPoster();
+		a = imageSetSize(a, baseSize, baseSize * 1.42);
+		return a;
+	}
+
+}

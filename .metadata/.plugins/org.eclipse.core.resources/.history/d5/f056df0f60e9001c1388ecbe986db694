@@ -1,0 +1,275 @@
+package GYH;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.ScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+public class SnackMenu extends JFrame implements ActionListener {
+
+	// DB관련 변수
+	private Connection conn = null;
+	private Statement stmt = null;
+	private ResultSet rs = null;
+	private String Driver = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://118.46.199.58:3306/movie";
+
+	private Container c;
+	private JButton PayMent;
+	private JButton ReSet;
+	private String header[] = { "메뉴", "계수", "가격" };
+	private DefaultTableModel stmodel = new DefaultTableModel(header, 0);
+	private JTable tb = new JTable(stmodel); //
+	private JScrollPane ScrollPane = new JScrollPane(tb);
+	private JPanel Main;
+	private JLabel imglabel1;
+	private JLabel imglabel2;
+	private JLabel imglabel3;
+	private JButton PopcornBtn;
+	private JButton drinkBtn;
+	private JButton SideBtn;
+	private Detail Dt;
+	private String title;
+	private PayMent PY;
+	private int OrderId;
+	
+
+	public DefaultTableModel getStmodel() {
+		return stmodel;
+	}
+
+	public SnackMenu() {
+
+		setTitle("메뉴 창");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1600, 900);
+		setLocationRelativeTo(null);
+		setUndecorated(true);
+
+		c = getContentPane();
+		c.setLayout(new BorderLayout());
+
+		MenuList();
+		ControlBox();
+
+//		setResizable(false);
+		setVisible(true);
+	}
+
+	private void ControlBox() {
+		Main = new JPanel();
+		Main.setLayout(new GridLayout(0, 1, 10, 0));
+		Main.setPreferredSize(new Dimension(300, 500)); // 가로,세로 사이즈 제정의
+		Main.setBackground(Color.BLUE);
+
+		JPanel Sub = new JPanel();
+		Sub.setBorder(BorderFactory.createEmptyBorder(60, 0, 0, 0));
+
+		PayMent = new JButton("결제하기");
+		PayMent.addActionListener(this);
+		PayMent.setPreferredSize(new Dimension(270, 60));
+
+		ReSet = new JButton("초기화");
+		ReSet.addActionListener(this);
+		ReSet.setPreferredSize(new Dimension(270, 60));
+
+		Sub.add(PayMent);
+		Sub.add(ReSet);
+
+		Main.add(ScrollPane);
+		Main.add(Sub);
+		c.add(Main, BorderLayout.EAST);
+	}
+
+	private void MenuList() {
+
+		JPanel MenuList = new JPanel();
+		MenuList.setPreferredSize(new Dimension(700, 500));
+		MenuList.setBorder(BorderFactory.createEmptyBorder(50, 30, 50, 30));
+		MenuList.setLayout(new GridLayout(0, 3, 0, 0));
+
+		JPanel popcorn = new JPanel();
+		popcorn.setPreferredSize(new Dimension(300, 400));
+		ImageIcon ic1 = new ImageIcon("image/일반팝콘.jpeg");
+		Image img1 = ic1.getImage();
+		Image newimg1 = img1.getScaledInstance(180, 280, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon newic1 = new ImageIcon(newimg1);
+		imglabel1 = new JLabel(newic1);
+		PopcornBtn = new JButton("팝콘");
+		PopcornBtn.setPreferredSize(new Dimension(200, 40));
+		PopcornBtn.addActionListener(this);
+		popcorn.add(imglabel1);
+		popcorn.add(PopcornBtn);
+
+		JPanel beverage = new JPanel();
+		beverage.setPreferredSize(new Dimension(500, 400));
+		ImageIcon ic2 = new ImageIcon("image/칠성사이다.jpeg");
+		Image img2 = ic2.getImage();
+		Image newimg2 = img2.getScaledInstance(180, 280, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon newic2 = new ImageIcon(newimg2);
+		imglabel2 = new JLabel(newic2);
+		drinkBtn = new JButton("음료수");
+		drinkBtn.setPreferredSize(new Dimension(200, 40));
+		drinkBtn.addActionListener(this);
+		beverage.add(imglabel2);
+		beverage.add(drinkBtn);
+
+		JPanel etc = new JPanel();
+		etc.setPreferredSize(new Dimension(500, 400));
+		ImageIcon ic3 = new ImageIcon("image/나쵸.jpeg");
+		Image img3 = ic3.getImage();
+		Image newimg3 = img3.getScaledInstance(180, 280, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon newic3 = new ImageIcon(newimg3);
+		imglabel3 = new JLabel(newic3);
+		SideBtn = new JButton("사이드");
+		SideBtn.setPreferredSize(new Dimension(200, 40));
+		SideBtn.addActionListener(this);
+		etc.add(imglabel3);
+		etc.add(SideBtn);
+
+		MenuList.add(popcorn);
+		MenuList.add(beverage);
+		MenuList.add(etc);
+
+		c.add(MenuList, BorderLayout.CENTER);
+
+	}
+
+	public static void main(String[] args) {
+		SnackMenu ex = new SnackMenu();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == PopcornBtn) { // 팝콘 버튼
+			title = PopcornBtn.getText();
+			if (Dt == null) {
+				Dt = new Detail(this, title);
+			} else {
+				Dt.dispose();
+				Dt = new Detail(this, title);
+			}
+		} else if (obj == drinkBtn) { // 음료 버튼
+			title = drinkBtn.getText();
+			if (Dt == null) {
+				Dt = new Detail(this, title);
+			} else {
+				Dt.dispose();
+				Dt = new Detail(this, title);
+			}
+		} else if (obj == SideBtn) { // 기타 버튼
+			title = SideBtn.getText();
+			if (Dt == null) {
+				Dt = new Detail(this, title);
+			} else {
+				Dt.dispose();
+				Dt = new Detail(this, title);
+			}
+		} else if (obj == PayMent) { // 결제하기 버튼
+
+			Calendar today = Calendar.getInstance();
+			int month = today.get(Calendar.MONDAY);
+			int date = today.get(Calendar.DATE);
+			Random random = new Random();
+			String now = String.valueOf((month + 1)) + String.valueOf(date);
+			OrderId = Integer.parseInt( now + String.valueOf(random.nextInt(10000)));
+
+			int row = stmodel.getRowCount();
+			int col = stmodel.getColumnCount();
+
+			if (row == 0) {
+				JOptionPane.showMessageDialog(this, "리스트에 메뉴가 없습니다.", "알림", JOptionPane.OK_OPTION);
+				return;
+			} else {
+				if (PY == null) {
+					PY = new PayMent(this);
+				} else {
+					PY.dispose();
+					PY = new PayMent(this);
+				}
+
+					try {
+						String sql = null;
+						Class.forName(Driver);
+						conn = DriverManager.getConnection(url, "javapj", "1234");
+						stmt = conn.createStatement();
+
+						for (int i = 0; i < row; i++) {
+							String Name = stmodel.getValueAt(i, 0).toString();
+							String Num = stmodel.getValueAt(i, 1).toString();
+							String TotalPrice = stmodel.getValueAt(i, 2).toString();
+						
+							sql = "INSERT INTO snorder(snname, sncount,snprice,smcheck) values('"+Name+"','"+Num+"','"+TotalPrice+"','"+OrderId+"')";
+							stmt.executeUpdate(sql);
+							
+							
+						}
+						
+						stmodel.setRowCount(0);
+
+
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					} finally {
+						try {
+//							rs.close();
+							stmt.close();
+							conn.close();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+					}
+			}
+
+		} else if (obj == ReSet) { // 취소버튼
+			JOptionPane.showMessageDialog(this, "초기화 되었습니다.", "알림", JOptionPane.OK_OPTION);
+			stmodel.setNumRows(0);
+		}
+
+	}
+
+	public int getOrderId() {
+		return OrderId;
+	}
+
+}
+
+
+

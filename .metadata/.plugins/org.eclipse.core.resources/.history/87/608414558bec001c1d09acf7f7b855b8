@@ -1,0 +1,137 @@
+package LUH_201945022.movie;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+
+import javax.swing.*;
+
+import LUH_201945022.frame.*;
+import LUH_201945022.set.*;
+
+public class SelectPay extends PanelSet implements ActionListener {
+
+///////////////////////////////////////////////////////////////
+// 변수 선언
+	private static final int btnNum = 1;
+	private static final int lblNum = 1;
+
+	DecimalFormat decFormat = new DecimalFormat("###,###");
+
+	int aPrice = 10000;
+	int cPrice = 7000;
+	int totalPrice;
+
+	private FrameSet fs;
+
+///////////////////////////////////////////////////////////////
+// 생성자
+	public SelectPay(MainPanel main) {
+		this.main = main;
+		this.selMovie = main.getSelMovie();
+
+		setBackground(purpledark);
+		setLayout(gbl);
+
+		gbc = new GridBagConstraints();
+		setGbc();
+
+		btn = creBtn(btnNum);
+		setBtn(btn[0], "결제하기", 7 * 100, 7 * 63);
+		btn[0].setPreferredSize(new Dimension(7 * 100, 7 * 63));
+		btn[0].addActionListener(this);
+
+		// Pan1
+		JPanel Pan1 = new JPanel();
+		GridBagLayout gbl1 = new GridBagLayout();
+		Pan1.setLayout(gbl1);
+		Pan1.setBackground(purplemid);
+		GridBagConstraints gbc1 = new GridBagConstraints();
+		setGbc(gbc1);
+
+		gbc1.fill = GridBagConstraints.BOTH;
+		gbc1.weightx = 0;
+		gbc1.weighty = 1;
+		gbl1.setConstraints(btn[0], gbc1);
+		Pan1.add(btn[0]);
+
+//		gbc.weightx = 1;
+//		gbc.weighty = 1;
+		gbc.insets = new Insets(10, 100, 10, 0);
+		gbl.setConstraints(Pan1, gbc);
+		add(Pan1);
+
+		totalPrice = main.ss.cnta * aPrice + main.ss.cntc * cPrice;
+		lbl = creLbl(lblNum);
+		lbl[0].setText("결제 금액 : " + decFormat.format(totalPrice) + " 원");
+		lbl[0].setOpaque(true);
+		lbl[0].setBackground(Color.BLACK);
+		lbl[0].setForeground(Color.white);
+		lbl[0].setFont(new Font("궁서", Font.BOLD, 50));
+		lbl[0].setHorizontalAlignment(JLabel.RIGHT);
+		lbl[0].setVerticalAlignment(JLabel.BOTTOM);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridy = 1;
+		gbl.setConstraints(lbl[0], gbc);
+		add(lbl[0]);
+	}
+
+///////////////////////////////////////////////////////////////
+// 메서드
+
+///////////////////////////////////////////////////////////////
+// 리스너
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == btn[0]) {
+
+//			ResultSet rs = null;
+//			Database.init();
+//			try {
+//				// 티켓 정보 DB에 업로드
+//				String sql = "INSERT INTO ticket (RunningId,MvWhen,Seat,mvPrice,payMethod,`member`,bookwho,bookid)"
+//						+ "VALUES (" 
+//						+ selMovie.getSelRunId() + ", "
+//						+ selMovie.getSelTime() + ", "
+//						+ "선택한 좌석," + ", "
+//						+ totalPrice + ", "
+//						+ "결제방식,"
+//						+ "4, "
+//						+ "'성인:1 청소년:1', "
+//						+ "예약한좌석 슈퍼키)";
+//				
+//						rs = Database.getResultSet(sql);
+//			} finally {
+//				try {
+//					rs.close();
+//					Database.conn.close();
+//					Database.stmt.close();
+//					System.out.println("DB 연결 종료");
+//				} catch (SQLException e1) {
+//					e1.printStackTrace();
+//				}
+//			}
+
+			int qut_data = JOptionPane.showConfirmDialog(null, "출력 중 입니다.", "완료", JOptionPane.DEFAULT_OPTION);
+			if (qut_data == JOptionPane.YES_OPTION) {
+				fs = main.getFrameSet();
+
+				fs.c.remove(fs.mainPanel);
+
+				MainPanel a = new MainPanel(fs);
+				fs.mainPanel = a;
+				fs.c.add(fs.mainPanel);
+
+				fs.setVisible(true);
+
+				fs.revalidate();
+			}
+		}
+	}
+
+///////////////////////////////////////////////////////////////
+}

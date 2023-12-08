@@ -1,0 +1,233 @@
+
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import javax.swing.border.Border;
+
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+
+public class instruction extends JFrame implements ActionListener, MouseListener, MouseMotionListener{
+
+	private JButton btnmovieInst;
+	private JButton btnScreenInst;
+	private JButton btnsnackInst;
+	private JButton btnstaffInst;
+	private JButton btnetcInst;
+	private JButton btnexit;
+	private int pnx;
+	private int pny;
+	private JButton btnpre;
+	private JButton btnNext;
+	private JPanel[] introP = new JPanel[5];
+	private JLabel[] introimglbl = new JLabel[5];
+	private JTextPane[] introtxtp = new JTextPane[5];
+
+	public instruction(String title, StaffForm staffForm) {
+		setTitle(title);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setSize(1000, 600);
+		setUndecorated(true);
+		setLocationRelativeTo(staffForm);
+		setLayout(new BorderLayout());
+		
+		
+		
+		instructiontop();
+		instructionwest();
+		instructionbelo();
+		instructionMain();
+		
+		
+		setVisible(true);
+}
+	private void instructiontop(){
+		JPanel exitpanel = new JPanel();
+		exitpanel.setLayout(new BorderLayout());
+		exitpanel.setBackground(new Color(32,32,34));
+		exitpanel.addMouseListener(this);
+		exitpanel.addMouseMotionListener(this);
+		
+		btnexit = new JButton("X");
+		btnexit.setForeground(Color.white);
+		btnexit.setBackground(Color.red);
+		btnexit.addActionListener(this);
+		
+		exitpanel.add(btnexit, BorderLayout.EAST);
+		
+		add(exitpanel, BorderLayout.NORTH);
+	}
+	
+	private void instructionwest(){
+		JPanel btnpanel = new JPanel();
+		btnpanel.setLayout(new GridLayout(5,1));
+		btnpanel.setPreferredSize(new Dimension(200, 0));
+		btnpanel.setBackground(Color.BLACK);
+		
+		btnmovieInst = new JButton("영화 정보");
+		btnmovieInst.setBackground(new Color(255,183,0));
+		btnmovieInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnmovieInst.setBorder(new RoundedBorder(5));
+
+		
+		btnScreenInst = new JButton("상영 정보");
+		btnScreenInst.setBackground(new Color(255,200,0));
+		btnScreenInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnScreenInst.setBorder(new RoundedBorder(5));
+
+		btnsnackInst = new JButton("간식 관리");
+		btnsnackInst.setBackground(new Color(255,183,0));
+		btnsnackInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnsnackInst.setBorder(new RoundedBorder(5));
+
+		btnstaffInst = new JButton("직원 관리");
+		btnstaffInst.setBackground(new Color(255,200,0));
+		btnstaffInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnstaffInst.setBorder(new RoundedBorder(5));
+
+		btnetcInst = new JButton("부가 설명");
+		btnetcInst.setBackground(new Color(255,183,0));
+		btnetcInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnetcInst.setBorder(new RoundedBorder(5));
+		
+		btnpanel.add(btnmovieInst);
+		btnpanel.add(btnScreenInst);
+		btnpanel.add(btnsnackInst);
+		btnpanel.add(btnstaffInst);
+		btnpanel.add(btnetcInst);
+		
+		add(btnpanel, BorderLayout.WEST);
+	}
+	private void instructionbelo(){
+		JPanel contolPanel = new JPanel();
+		contolPanel.setLayout(new FlowLayout());
+		contolPanel.setBackground(new Color(32,32,34));
+		
+		btnpre = new JButton("  <-  ");
+		btnpre.setForeground(Color.white);
+		btnpre.setBackground(new Color(95,50,230));
+		btnpre.setBorder(new RoundedBorder(10));
+		btnpre.addActionListener(this);
+		btnpre.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+
+		btnNext = new JButton("  ->  ");
+		btnNext.setForeground(Color.white);
+		btnNext.setBorder(new RoundedBorder(10));
+		btnNext.setBackground(new Color(95,50,230));
+		btnNext.addActionListener(this);
+		btnNext.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+
+		contolPanel.add(btnpre);
+		contolPanel.add(btnNext);
+		
+		add(contolPanel, BorderLayout.SOUTH);
+	}
+	
+	//--------------------설명 패널
+	
+
+	private void instructionMain(){
+		
+		
+		for (int i = 0; i < introP.length; i++) {
+			introP[i] = new JPanel();
+			introimglbl[i] = new JLabel();
+			introtxtp[i] = new JTextPane();
+			introP[i].setLayout(new FlowLayout());			
+		}
+		
+		
+		introimglbl[0].setText("1");
+		introimglbl[1].setText("2");
+		introimglbl[2].setText("3");
+		introimglbl[3].setText("4");
+		introimglbl[4].setText("5");
+		
+		
+		introtxtp[0].setText("p1");
+		introtxtp[1].setText("p2");
+		introtxtp[2].setText("p3");
+		introtxtp[3].setText("p4");
+		introtxtp[4].setText("p5");
+		
+
+		for (int i = 0; i < introP.length; i++) {
+			introP[i].add(introimglbl[i]);
+			introP[i].add(introtxtp[i]);
+			
+			add(introP[i], BorderLayout.EAST);		
+		}
+	}
+
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		
+		if(obj == btnexit) {
+			dispose();
+		}else if(obj == btnmovieInst) {
+			
+		}else if(obj == btnScreenInst) {
+			
+		}else if(obj == btnsnackInst) {
+			
+		}else if(obj == btnstaffInst) {
+			
+		}else if(obj == btnetcInst) {
+			
+		}
+	}
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
+		int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
+
+		this.setLocation((x-pnx), (y-pny));
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		pnx = e.getX();
+		pny = e.getY();				
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

@@ -1,0 +1,32 @@
+package temp;
+
+import java.awt.BorderLayout;
+import java.awt.Font;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class TimerFrame extends JFrame{
+
+   public TimerFrame(String title) {
+      setTitle(title);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setLocation(600, 250);
+      setSize(300, 200);
+      setLayout(new BorderLayout());
+      
+      JLabel timerLabel = new JLabel("0");
+      add(timerLabel);
+      timerLabel.setFont(new Font("Gothic", Font.ITALIC, 80));
+      timerLabel.setHorizontalAlignment(JLabel.CENTER);
+      
+      setVisible(true);
+      TimerThread tt = new TimerThread(timerLabel);
+      tt.start();
+      
+   }
+   
+   public static void main(String[] args) {
+      new TimerFrame("Thread-타이머");
+   }
+}

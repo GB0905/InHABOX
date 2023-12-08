@@ -1,0 +1,192 @@
+package GGB_201945025;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+public class TicketPrint extends JPanel implements ActionListener {
+	File base = new File("ticketInfo.txt");
+	private JLabel title;
+	private JLabel date;
+	private JLabel time;
+	private JLabel room;
+	private JLabel seat;
+	Font A = new Font("맑은 고딕", Font.BOLD, 20);
+	ArrayList<String> i;
+	String[] splitArray;		// i 0번 티켓 번호
+								// i 1번 좌석
+								// i 2번 성인 청소년 구성
+								// i 3번 날짜
+								// i 4번 시간
+								// i 5번 상영관
+								// i 6번 제목
+								// i 7번 관람가
+								// i 8번 장르
+	
+	public TicketPrint(ArrayList<String> i) {
+		this.i = i;
+		
+		setLayout(new BorderLayout());
+		// 1440, 810
+		
+		JPanel ticket = new JPanel();
+		ticket.setPreferredSize(new Dimension(1440, 460));
+		ticket.setBackground(new Color(75, 52, 149));
+		ticket.setLayout(new BorderLayout());
+		ticket.setBorder(new LineBorder(Color.white, 2));
+		
+		JPanel ticketIcon = new JPanel();
+		ticketIcon.setLayout(new BorderLayout());
+		ticketIcon.setBackground(new Color(75, 52, 149));
+		ticketIcon.setPreferredSize(new Dimension(360, 460));
+		JLabel poster = new JLabel(new ImageIcon("images/poster/" + i.get(6) + ".jpg"));
+		ticketIcon.add(poster);
+		ticket.add(ticketIcon, BorderLayout.WEST);
+		
+		JPanel ticketInfo = new JPanel();
+		ticketInfo.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
+		ticketInfo.setBackground(new Color(99, 69, 196));
+		ticketInfo.setBorder(new CompoundBorder(new LineBorder(new Color(75, 52, 149), 20), new LineBorder(Color.white, 4)));
+		
+		JLabel icon = new JLabel(new ImageIcon("images/GGB/무비티켓.png"));
+		icon.setPreferredSize(new Dimension(1000, 130));
+		icon.setHorizontalAlignment(JLabel.LEFT);
+		ticketInfo.add(icon);
+
+		title = new JLabel(i.get(6)); 
+		title.setPreferredSize(new Dimension(300, 60));
+		title.setBorder(new LineBorder(Color.white, 3));
+		title.setFont(A);
+		title.setForeground(Color.white);
+		title.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(title);
+		
+		JLabel empty1 = new JLabel();
+		empty1.setPreferredSize(new Dimension(600, 60));
+		ticketInfo.add(empty1);
+		
+		date = new JLabel(i.get(3)); 
+		date.setPreferredSize(new Dimension(200, 60));
+		date.setBorder(new LineBorder(Color.white, 3));
+		date.setFont(A);
+		date.setForeground(Color.white);
+		date.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(date);
+		
+		time = new JLabel(i.get(4)); 
+		time.setPreferredSize(new Dimension(200, 60));
+		time.setBorder(new LineBorder(Color.white, 3));
+		time.setFont(A);
+		time.setForeground(Color.white);
+		time.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(time);
+
+		JLabel empty2 = new JLabel();
+		empty2.setPreferredSize(new Dimension(550, 60));
+		ticketInfo.add(empty2);
+		
+		room = new JLabel(i.get(5) + " 관"); 
+		room.setPreferredSize(new Dimension(200, 60));
+		room.setBorder(new LineBorder(Color.white, 3));
+		room.setFont(A);
+		room.setForeground(Color.white);
+		room.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(room);
+		
+		seat = new JLabel(i.get(1));
+		seat.setPreferredSize(new Dimension(200, 60));
+		seat.setBorder(new LineBorder(Color.white, 3));
+		seat.setFont(A);
+		seat.setForeground(Color.white);
+		seat.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(seat);
+
+		JLabel empty3 = new JLabel();
+		empty3.setPreferredSize(new Dimension(550, 60));
+		ticketInfo.add(empty3);
+
+		ticket.add(ticketInfo, BorderLayout.CENTER);
+		add(ticket);
+		
+		JPanel print = new JPanel();
+		print.setPreferredSize(new Dimension(1440, 350));
+		print.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+		print.setBackground(new Color(60, 42, 120));
+		print.setLayout(new FlowLayout());
+		
+		JButton prButton = new JButton();
+		prButton.setPreferredSize(new Dimension(960, 300));
+		prButton.addActionListener(this);
+		print.add(prButton);
+		add(print, BorderLayout.SOUTH);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		int var = JOptionPane.showConfirmDialog(this.getRootPane(), "티켓을 출력하시겠습니까?", "티켓 출력", JOptionPane.OK_CANCEL_OPTION);
+		File ticket = new File("Ticket/" + i.get(0) + ".txt");
+		if(var == 0) {
+			if(ticket.exists()) {
+				JOptionPane.showMessageDialog(this.getRootPane(), "이미 출력된 티켓입니다.", "오류",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				FileReader fr;
+				FileWriter fw;
+				try {
+					fr = new FileReader(base);
+					BufferedReader br = new BufferedReader(fr);
+				
+					String line = "";
+					String line1 = "";
+				
+					while((line1 = br.readLine()) != null) {
+						line = line + line1 + "\n";
+					}
+				
+					splitArray = line.split("<a");
+				
+					splitArray[0] = splitArray[0] + i.get(6);
+					splitArray[1] = splitArray[1] + i.get(7) + "세 이용가 / " + i.get(8);
+					splitArray[2] = splitArray[2] + i.get(3) + " / " + i.get(4);
+					splitArray[3] = splitArray[3] + i.get(5) + "관 / " + i.get(1);
+					splitArray[4] = splitArray[4] + i.get(2);
+					splitArray[5] = splitArray[5] + i.get(0);
+					
+					fw = new FileWriter(ticket);
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write(splitArray[0]);   	//버퍼에 있는 값 출력
+					bw.write(splitArray[1]);
+					bw.write(splitArray[2]);
+					bw.write(splitArray[3]);
+					bw.write(splitArray[4]);
+					bw.write(splitArray[5]);
+					bw.write(splitArray[6]);
+					bw.flush();   				//남아있는 데이터를 모두 출력시킴
+					bw.close();   				//스트림을 닫음
+
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,185 @@
+package LUH_201945022.frame;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import KYH_201945023.Login;
+import LUH_201945022.set.*;
+
+public class TopPanel extends PanelSet implements MouseListener, MouseMotionListener, ActionListener {
+	private Dimension topsize = new Dimension(1600, 900 / 25);
+	private int mpX, mpY;
+	private FrameSet fs;
+	private JButton exit;
+	private JButton manage;
+	private JButton home;
+	private JButton back;
+
+	public TopPanel(FrameSet fs) {
+		this.fs = fs;
+		setLayout(gbl);
+		setPreferredSize(topsize);
+		setBackground(Color.white);
+		setGbc();
+
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		JPanel left = new JPanel();
+		left.setLayout(new FlowLayout(FlowLayout.LEFT));
+		left.setBackground(Color.white);
+		back = new JButton();
+		back.setPreferredSize(new Dimension(25, 25));
+		setBtn(back, "이전", 25, 25);
+		back.addActionListener(this);
+		
+		home = new JButton();
+		home.setPreferredSize(new Dimension(25, 25));
+		setBtn(home, "홈", 25, 25);
+		home.addActionListener(this);
+
+		left.add(back);
+		left.add(home);
+		gbl.setConstraints(left, gbc);
+
+		gbc.weightx = 0;
+		gbc.gridx = 3;
+		exit = new JButton();
+		exit.addActionListener(this);
+		setBtn(exit, "닫기", 25, 25);
+		gbl.setConstraints(exit, gbc);
+
+		gbc.gridx = 1;
+		gbl.setConstraints(home, gbc);
+
+		gbc.gridx = 2;
+		manage = new JButton();
+		setBtn(manage, "관리자", 25, 25);
+		manage.addActionListener(this);
+		gbl.setConstraints(manage, gbc);
+
+		add(exit);
+		add(manage);
+		add(left);
+//		add(back);
+
+		addMouseListener(this);
+		addMouseMotionListener(this);
+	}
+	
+	public void setBtn(JButton asd, String s, int i, int u) {
+		asd.setIcon(imageSetSize(
+				new ImageIcon("images/LUH/"+ s + ".png"), i, u));
+		asd.setBorderPainted(false);
+		asd.setContentAreaFilled(false);
+		asd.setFocusPainted(false);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		mpX = e.getX();
+		mpY = e.getY();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		fs.setLocation(fs.getLocation().x + e.getX() - mpX, fs.getLocation().y + e.getY() - mpY);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == exit) {
+			System.exit(0);
+		} else if (obj == manage) {
+			Login lg = new Login("인천점");
+		} else if (obj == home) {
+			fs.c.remove(fs.mainPanel);
+
+			MainPanel a = new MainPanel(fs);
+			fs.mainPanel = a;
+			fs.c.add(fs.mainPanel);
+
+			fs.setVisible(true);
+
+			revalidate();
+		} else if (obj == back) {
+			if (fs.mainPanel.fl.isVisible()) {
+				JOptionPane.showMessageDialog(this.getRootPane(), "첫 화면 입니다.", "", JOptionPane.INFORMATION_MESSAGE);
+			} else if (fs.mainPanel.sm != null) {
+				if (fs.mainPanel.sm.isVisible()) {
+					fs.mainPanel.sm.setVisible(false);
+					fs.mainPanel.fl.setVisible(true);
+					fs.mainPanel.fr.setVisible(true);
+				}
+			} else if (fs.mainPanel.st != null) {
+				System.out.println("asdfasdf");
+				if (fs.mainPanel.st.isVisible()) {
+					fs.mainPanel.st.setVisible(false);
+					fs.mainPanel.pl.setVisible(false);
+					fs.mainPanel.sm.setVisible(true);
+				}
+			} else if (fs.mainPanel.ss != null) {
+				if (fs.mainPanel.ss.isVisible()) {
+					fs.mainPanel.ss.setVisible(false);
+//					fs.mainPanel.fl.setVisible(true);
+//					fs.mainPanel.fr.setVisible(true);
+				}
+			} else if (fs.mainPanel.sp != null) {
+				if (fs.mainPanel.sp.isVisible()) {
+//					fs.mainPanel.sm.setVisible(false);
+//					fs.mainPanel.fl.setVisible(true);
+//					fs.mainPanel.fr.setVisible(true);
+				}
+			} else if (fs.mainPanel.iq != null) {
+				if (fs.mainPanel.iq.isVisible()) {
+					fs.mainPanel.iq.setVisible(false);
+					fs.mainPanel.fl.setVisible(true);
+					fs.mainPanel.fr.setVisible(true);
+				}
+			} else if (fs.mainPanel.tp != null) {
+				if (fs.mainPanel.tp.isVisible()) {
+
+				}
+			} else if (fs.mainPanel.s != null) {
+				if (fs.mainPanel.s.isVisible()) {
+					fs.mainPanel.s.setVisible(false);
+					fs.mainPanel.fl.setVisible(true);
+					fs.mainPanel.fr.setVisible(true);
+				}
+			}
+			revalidate();
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+}

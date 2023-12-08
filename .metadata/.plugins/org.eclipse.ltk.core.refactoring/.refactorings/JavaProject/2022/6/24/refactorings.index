@@ -1,0 +1,29 @@
+1654669201400	Rename field 'movPoster'
+1654669207700	Rename field 'movName'
+1654669214005	Rename field 'movNum'
+1654669221912	Rename field 'movRoom'
+1654669228351	Rename field 'movTime'
+1654669236209	Rename field 'movSeat'
+1654938429800	Rename local variable 'movList'
+1654940446669	Rename method 'getMovName'
+1654940489872	Rename method 'getMovPoster'
+1654940498718	Rename method 'getMovRoom'
+1654940504434	Rename method 'setmovRoom'
+1654940514531	Rename method 'setMovTime'
+1654940520928	Rename method 'getMovTime'
+1654940527573	Rename method 'getMovSeat'
+1654940532696	Rename method 'setMovSeat'
+1654950843575	Rename package 'GYH'
+1654950973583	Copy packages
+1654950986337	Delete element
+1654950989637	Delete element
+1654951259636	Rename package 'LUH_201945022.movie'
+1654951351489	Copy compilation units
+1654951358748	Copy compilation units
+1654951365440	Copy compilation units
+1654951417617	Delete element
+1654951432233	Delete element
+1654951444486	Delete element
+1654951453290	Delete element
+1654955217296	Copy compilation unit
+1654972637701	Delete element

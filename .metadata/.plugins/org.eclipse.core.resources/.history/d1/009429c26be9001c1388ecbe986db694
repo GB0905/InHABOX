@@ -1,0 +1,81 @@
+package set;
+
+import javax.swing.ImageIcon;
+
+public class Movie {
+	ImageIcon poster; 	// 포스터
+	String name;		// 제목
+	int num;			// 영화 번호
+	
+	int[] runId;		// 상영 번호
+	int[] room;			// 영화 상영관
+	String[] date;		// 영화 날짜
+	String[] time;		// 영화 시간
+	String[] seat;		// 영화 좌석
+	
+	public void setMovieInfo(int Num) {
+		runId = new int[Num];
+		room = new int[Num];
+		time = new String[Num];
+		seat = new String[Num];
+	}
+	
+	
+	
+	// 영화 이름, 번호, 포스터
+	public Movie(String movNum, String movName) {
+		this.name = movName;
+		this.num = Integer.parseInt(movNum);
+		this.poster = new ImageIcon("images/poster" + "/" + movName + ".jpg");
+	}
+	public String getName() {
+		return name;
+	}
+	public int getMovNum() {
+		return num;
+	}
+	public ImageIcon getPoster() {
+		return poster;
+	}
+	
+	// 영화 상영관
+	public int[] getRoom(int i) {
+		return room;
+	}
+	public void setRoom(int i, int movRoom) {
+		this.room[i] = movRoom;
+	}
+	
+	// 상영 번호
+	public int[] getRunId() {
+		return runId;
+	}
+	public void setRunId(int i, int runId) {
+		this.runId[i] = runId;
+	}
+	
+	// 상영 번호
+	public String[] getDate() {
+		return date;
+	}
+	public void setDate(int i, String date) {
+		this.date[i] = date;
+	}
+	
+	// 영화 시간
+	public void setTime(int i, String movTime) {
+		this.time[i] = movTime;
+	}
+	public String[] getTime() {
+		return time;
+	}
+
+	// 영화 좌석
+	public String[] getSeat() {
+		return seat;
+	}
+	public void setSeat(int i, String movSeat) {
+		this.seat[i] = movSeat;
+	}
+
+}

@@ -1,0 +1,14 @@
+1652787743315	Delete element
+1652787785293	Rename type 'setPanel'
+1652788482134	Rename type 'fileset'
+1652790426132	Extract method 'setMain'
+1652790699259	Rename field 'selMov'
+1652790833112	Rename field 'imgLoc'
+1652791401578	Rename field 'lbName'
+1652793369276	Rename field 'BASESIZE'
+1652793535347	Rename field 'lbNum'
+1652793799075	Encapsulate field 'baseSize'
+1652794241676	Encapsulate field 'lbNum'
+1652807931295	Delete element
+1652808019332	Delete element
+1652808395763	Delete element

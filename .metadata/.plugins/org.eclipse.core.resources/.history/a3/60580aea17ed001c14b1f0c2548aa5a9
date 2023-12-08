@@ -1,0 +1,246 @@
+package GGB_201945025;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
+
+import LUH_201945022.frame.*;
+
+public class TicketPrint extends JPanel implements ActionListener {
+	
+	private JLabel title;
+	private JLabel date;
+	private JLabel time;
+	private JLabel room;
+	private JLabel seat;
+	private Font A = new Font("맑은 고딕", Font.BOLD, 30);
+	private ArrayList<String> i;
+	private String[] splitArray; // i 0번 티켓 번호
+									// i 1번 좌석
+									// i 2번 성인 청소년 구성
+									// i 3번 날짜
+									// i 4번 시간
+									// i 5번 상영관
+									// i 6번 제목
+									// i 7번 관람가
+									// i 8번 장르
+	private MainPanel main;
+	private MainFrame fs;
+	private JButton prButton;
+
+	public TicketPrint(ArrayList<String> i, MainPanel main) {
+		this.main = main;
+		this.i = i;
+
+		setLayout(new BorderLayout());
+
+		JPanel ticket = new JPanel();
+		ticket.setPreferredSize(new Dimension(1440, 460));
+		ticket.setBackground(new Color(75, 52, 149));
+		ticket.setLayout(new BorderLayout());
+		ticket.setBorder(new LineBorder(Color.white, 2));
+
+		JPanel ticketIcon = new JPanel();
+		ticketIcon.setLayout(new BorderLayout());
+		ticketIcon.setBackground(new Color(75, 52, 149));
+		ticketIcon.setPreferredSize(new Dimension(360, 460));
+		JLabel poster = new JLabel(new ImageIcon("images/poster/" + i.get(6) + ".jpg"));
+		ticketIcon.add(poster);
+		ticket.add(ticketIcon, BorderLayout.WEST);
+
+		JPanel ticketInfo = new JPanel();
+		ticketInfo.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
+		ticketInfo.setBackground(new Color(99, 69, 196));
+		ticketInfo.setBorder(
+				new CompoundBorder(new LineBorder(new Color(75, 52, 149), 20), new LineBorder(Color.white, 4)));
+
+		JLabel icon = new JLabel(new ImageIcon("images/GGB/무비티켓.png"));
+		icon.setPreferredSize(new Dimension(1000, 130));
+		icon.setHorizontalAlignment(JLabel.LEFT);
+		ticketInfo.add(icon);
+
+		title = new JLabel(i.get(6));
+		title.setPreferredSize(new Dimension(600, 60));
+		title.setBorder(new LineBorder(Color.white, 3));
+		title.setFont(A);
+		title.setForeground(Color.white);
+		title.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(title);
+
+		JLabel empty1 = new JLabel();
+		empty1.setPreferredSize(new Dimension(200, 60));
+		ticketInfo.add(empty1);
+
+		date = new JLabel(i.get(3));
+		date.setPreferredSize(new Dimension(200, 60));
+		date.setBorder(new LineBorder(Color.white, 3));
+		date.setFont(A);
+		date.setForeground(Color.white);
+		date.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(date);
+
+		time = new JLabel(i.get(4));
+		time.setPreferredSize(new Dimension(200, 60));
+		time.setBorder(new LineBorder(Color.white, 3));
+		time.setFont(A);
+		time.setForeground(Color.white);
+		time.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(time);
+
+		JLabel empty2 = new JLabel();
+		empty2.setPreferredSize(new Dimension(550, 60));
+		ticketInfo.add(empty2);
+
+		room = new JLabel(i.get(5) + " 관");
+		room.setPreferredSize(new Dimension(200, 60));
+		room.setBorder(new LineBorder(Color.white, 3));
+		room.setFont(A);
+		room.setForeground(Color.white);
+		room.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(room);
+
+		seat = new JLabel(i.get(1));
+		seat.setPreferredSize(new Dimension(200, 60));
+		seat.setBorder(new LineBorder(Color.white, 3));
+		seat.setFont(A);
+		seat.setForeground(Color.white);
+		seat.setHorizontalAlignment(JLabel.CENTER);
+		ticketInfo.add(seat);
+
+		JLabel empty3 = new JLabel();
+		empty3.setPreferredSize(new Dimension(550, 60));
+		ticketInfo.add(empty3);
+
+		ticket.add(ticketInfo, BorderLayout.CENTER);
+		add(ticket);
+
+		JPanel print = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
+		print.setPreferredSize(new Dimension(1440, 350));
+		print.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+		print.setBackground(new Color(60, 42, 120));
+
+		prButton = new JButton(new ImageIcon("images/GGB/출력하기1.png"));
+		prButton.setPreferredSize(new Dimension(1090, 300));
+		prButton.addActionListener(this);
+		prButton.setRolloverIcon(new ImageIcon("images/GGB/출력하기2.png"));
+		prButton.setPressedIcon(new ImageIcon("images/GGB/출력하기3.png"));
+		prButton.setBorderPainted(false);
+		prButton.setContentAreaFilled(false);
+		prButton.setFocusPainted(false);
+		print.add(prButton);
+
+		JButton dlButton = new JButton(new ImageIcon("images/GGB/예매취소1.png"));
+		dlButton.setPreferredSize(new Dimension(300, 300));
+		dlButton.addActionListener(this);
+		dlButton.setRolloverIcon(new ImageIcon("images/GGB/예매취소2.png"));
+		dlButton.setPressedIcon(new ImageIcon("images/GGB/예매취소3.png"));
+		dlButton.setBorderPainted(false);
+		dlButton.setContentAreaFilled(false);
+		dlButton.setFocusPainted(false);
+		print.add(dlButton);
+		add(print, BorderLayout.SOUTH);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == prButton) {
+			int var = JOptionPane.showConfirmDialog(this.getRootPane(), "티켓을 출력하시겠습니까?", "티켓 출력",
+					JOptionPane.OK_CANCEL_OPTION);
+			File ticket = new File(".Ticket/" + i.get(0) + ".txt");
+			if (var == 0) {
+				if (ticket.exists()) {
+					JOptionPane.showMessageDialog(this.getRootPane(), "이미 출력된 티켓입니다.", "오류", JOptionPane.ERROR_MESSAGE);
+				} else {
+					Printing a = new Printing(main, i);
+				}
+			}
+		} else {
+			int var = JOptionPane.showConfirmDialog(this.getRootPane(), "예매를 취소 하시겠습니까?", "예매 취소",
+					JOptionPane.OK_CANCEL_OPTION);
+			if (var == 0) {
+				try {
+					stDba db = new stDba();
+					db.stDBa();
+					JOptionPane.showMessageDialog(this.getRootPane(), "취소되었습니다.", "완료",
+							JOptionPane.INFORMATION_MESSAGE);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				fs = main.getFs();
+				fs.c.remove(fs.mainPanel);
+
+				MainPanel a = new MainPanel(fs);
+				fs.mainPanel = a;
+				fs.c.add(fs.mainPanel);
+
+				fs.setVisible(true);
+
+				revalidate();
+			}
+		}
+	}
+
+	class stDba {
+		static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+		// 드라이버 주소
+		static final String DB_URL = "jdbc:mysql://118.46.199.58:3306/movie";
+		// DB접속
+		// localhost 는 접속하려는 데이터베이스 주소를 입력하시면 됩니다.
+		// 3306은 데이터베이스에 접속할때 사용하는 포트 번호입니다. 설치할때설정한 것
+		// databasename에는 접속하려는 database의 name을 입력해 줍니다.
+
+		static final String USERNAME = "javapj";
+		static final String PASSWORD = "1234";
+
+		Connection conn = null;
+		java.sql.Statement stmt = null;
+		ResultSet insrs;
+
+		public void stDBa() throws SQLException {
+			System.out.print("Movie DB 접속 : ");
+			try {
+				Class.forName(JDBC_DRIVER);
+				// class클래스의 forName()함수를 이용해서 해당클래스를메모리로로드
+				// url, id, password 를 입력하여 데이터페이스에 접속
+				conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+				stmt = conn.createStatement();
+				String sql = null;
+				if (conn != null) {
+					System.out.println("접속 성공");
+					// 영화 조회
+					System.out.println("영화 조회 : ...");
+
+					sql = "DELETE FROM ticket WHERE ticketid = '" + i.get(0) + "'";
+					stmt.execute(sql);
+				} else {
+					System.out.println("실패");
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println(e.getMessage());
+				System.out.println("class not found exection");
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println("sql exception : " + e.getMessage());
+			} finally {
+				stmt.close();
+				conn.close();
+				System.out.println("끝");
+			}
+		}
+	}
+}

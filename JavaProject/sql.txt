@@ -1,0 +1,26 @@
+//영화 상영관 개수 조회
+select count(*) from mvtime where mvtime.mvid = 선택한 영화 코드;
+
+//영화 시간 오름차순으로 영화 선택
+select * from mvtime where mvtime.mvid = 선택한 영화코드 order by RDay asc;
+
+//영화 시간 오름차순으로 영화 선택(오늘 날짜 기준 이상인것)
+select * from mvtime where mvtime.mvid = 선택한 영화 코드 and Rday >= date(now()) order by RDay asc;
+
+
+//bookinfo 테이블에서 예약된 좌석 조회하기
+select sheet from bookinfo where runningid = 선택한상영번호
+
+//영화 좌석 선택후 데이터 넣어주기
+INSERT INTO bookinfo (RunningId,bookwho,mvPrice,Sheet) VALUES (선택한상영번호(RunningID),'성인:1',19000,21);
+
+
+//ticket에 값 넣기
+INSERT INTO ticket (RunningId,MvWhen,Seat,mvPrice,payMethod,`member`,bookwho,bookid)
+	VALUES (선택한상영번호,영화시간,선택한 좌석,가격,결제방식,맴버쉽 여부(그냥4로 하면 됨),'성인:1 청소년:1',예약한좌석 슈퍼키);
+			
+//예제
+INSERT INTO ticket (RunningId,MvWhen,Seat,mvPrice,payMethod,`member`,bookwho,bookid)
+	VALUES (10,'2022-05-27',21,19000,'카드',4,'성인:1 청소년:1',7);
+INSERT INTO ticket (RunningId,MvWhen,Seat,mvPrice,payMethod,`member`,bookwho,bookid)
+	VALUES (10,'2022-05-27',22,19000,'카드',4,'성인:1 청소년:1',8);

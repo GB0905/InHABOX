@@ -1,0 +1,32 @@
+package set.copy;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+import frame.MainPanel;
+
+public class FrameSet extends JFrame {
+	public Dimension screenSize = new Dimension(1600, 900);
+	public MainPanel mainPanel;
+	
+	public FrameSet() {
+		setLayout(new BorderLayout());
+		setTitle("asdfasdfasdf");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 끄기옵션
+		setSize(screenSize);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		
+		mainPanel = new MainPanel(this);
+		
+		getContentPane().add(mainPanel);
+		
+		setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		FrameSet a = new FrameSet();
+	}
+	
+}

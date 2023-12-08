@@ -1,0 +1,411 @@
+package KYH_201945023;
+
+/***********************
+* Copyright 2022 GaYoNE
+************************/
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+
+//설명 프레임
+public class instruction extends JFrame implements ActionListener, MouseListener, MouseMotionListener {
+
+	private JButton btnmovieInst;
+	private JButton btnScreenInst;
+	private JButton btnsnackInst;
+	private JButton btnstaffInst;
+	private JButton btnetcInst;
+	private JButton btnexit;
+	private int pnx;
+	private int pny;
+	private JButton btnpre;
+	private JButton btnNext;
+	private JPanel[] introP = new JPanel[5];
+	private JLabel[] introimglbl = new JLabel[5];
+	private JTextPane[] introtxtp = new JTextPane[5];
+	private JPanel introMainP;
+	private CardLayout card;
+	private ImageIcon[] introimg = new ImageIcon[5];
+	private int cardID = 0;
+	
+	public instruction(String title, StaffForm staffForm) {
+		setTitle(title);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setSize(1000, 600);
+		setUndecorated(true);
+		setLocationRelativeTo(staffForm);
+		setLayout(new BorderLayout());
+
+		instructiontop();
+		instructionwest();
+		instructionbelo();
+		instructionMain();
+
+		setVisible(true);
+	}
+	//상단 타이틀바 패널
+	private void instructiontop() {
+		JPanel exitpanel = new JPanel();
+		exitpanel.setLayout(new BorderLayout());
+		exitpanel.setBackground(new Color(32, 32, 34));
+		exitpanel.addMouseListener(this);
+		exitpanel.addMouseMotionListener(this);
+
+		btnexit = new JButton("X");
+		btnexit.setForeground(Color.white);
+		btnexit.setBackground(Color.red);
+		btnexit.addActionListener(this);
+
+		exitpanel.add(btnexit, BorderLayout.EAST);
+
+		add(exitpanel, BorderLayout.NORTH);
+	}
+	//왼쪽 설명서 리모콘버튼 패널
+	private void instructionwest() {
+		JPanel btnpanel = new JPanel();
+		btnpanel.setLayout(new GridLayout(5, 1));
+		btnpanel.setPreferredSize(new Dimension(200, 0));
+		btnpanel.setBackground(Color.BLACK);
+
+		btnmovieInst = new JButton("영화 정보");
+		btnmovieInst.setBackground(new Color(155,135,12));
+		btnmovieInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnmovieInst.setBorder(new RoundedBorder(5));
+		btnmovieInst.addActionListener(this);
+
+		btnScreenInst = new JButton("상영 정보");
+		btnScreenInst.setBackground(new Color(255, 200, 0));
+		btnScreenInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnScreenInst.setBorder(new RoundedBorder(5));
+		btnScreenInst.addActionListener(this);
+
+		btnsnackInst = new JButton("간식 관리");
+		btnsnackInst.setBackground(new Color(255, 183, 0));
+		btnsnackInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnsnackInst.setBorder(new RoundedBorder(5));
+		btnsnackInst.addActionListener(this);
+
+		btnstaffInst = new JButton("직원 관리");
+		btnstaffInst.setBackground(new Color(255, 200, 0));
+		btnstaffInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnstaffInst.setBorder(new RoundedBorder(5));
+		btnstaffInst.addActionListener(this);
+
+		btnetcInst = new JButton("부가 설명");
+		btnetcInst.setBackground(new Color(255, 183, 0));
+		btnetcInst.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+		btnetcInst.setBorder(new RoundedBorder(5));
+		btnetcInst.addActionListener(this);
+
+		btnpanel.add(btnmovieInst);
+		btnpanel.add(btnScreenInst);
+		btnpanel.add(btnsnackInst);
+		btnpanel.add(btnstaffInst);
+		btnpanel.add(btnetcInst);
+
+		add(btnpanel, BorderLayout.WEST);
+	}
+	//섦명서 하단 리모컨 패널
+	private void instructionbelo() {
+		JPanel contolPanel = new JPanel();
+		contolPanel.setLayout(new FlowLayout());
+		contolPanel.setBackground(new Color(32, 32, 34));
+
+		btnpre = new JButton("  <-  ");
+		btnpre.setForeground(Color.white);
+		btnpre.setBackground(new Color(95, 50, 230));
+		btnpre.setBorder(new RoundedBorder(10));
+		btnpre.addActionListener(this);
+		btnpre.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+
+		btnNext = new JButton("  ->  ");
+		btnNext.setForeground(Color.white);
+		btnNext.setBorder(new RoundedBorder(10));
+		btnNext.setBackground(new Color(95, 50, 230));
+		btnNext.addActionListener(this);
+		btnNext.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+
+		contolPanel.add(btnpre);
+		contolPanel.add(btnNext);
+
+		add(contolPanel, BorderLayout.SOUTH);
+	}
+
+	// --------------------실질적 설명 패널
+	private void instructionMain() {
+		card = new CardLayout(5, 5);
+		introMainP = new JPanel(card);
+		
+		
+		for (int i = 0; i < introP.length; i++) {
+			introP[i] = new JPanel();
+			introimglbl[i] = new JLabel();
+			introtxtp[i] = new JTextPane();
+			introimg[i] = new ImageIcon();
+
+			introtxtp[i].setEditable(false);
+			introtxtp[i].setAlignmentX(CENTER_ALIGNMENT);
+			introP[i].setLayout(new GridLayout(2, 1, 20, 20));
+		}
+
+		introimg[0] = new ImageIcon("images/instructionImage/영화 리스트.JPG");
+		introimg[1] = new ImageIcon("images/instructionImage/상영리스트.JPG");
+		introimg[2] = new ImageIcon("images/instructionImage/간식 관리.JPG");
+		introimg[3] = new ImageIcon("images/instructionImage/직원 관리.JPG");
+		introimg[4] = new ImageIcon("images/instructionImage/기타 버튼.JPG");
+		
+		for (int i = 0; i < introP.length; i++) {
+			introtxtp[i].addHyperlinkListener(new CstmHyperlinkListener());
+			introtxtp[i].setContentType("text/html");
+			introtxtp[i].setBackground(new Color(185,187,190));
+		}
+		
+		introtxtp[0].setText("<html><body>영화 정보<br> "
+				+ "현재 등록되어 있는 영화 리스트를 확인할 수 있습니다. <br>"
+				+ "최신 영화 순서로 정렬되며 영화는 개씩 선택이 가능합니다.<br>"
+				+ "선택된 영화는 오른쪽 마우스를 눌러 영화 <a href = http:부가설명>팝업메뉴</a>를 통해<br>"
+				+ "영화를 추가, 수정 및 삭제할 수 있습니다.</body></html>");
+
+		introtxtp[1].setText("<html><body>상영 정보<br> 현재 등록되어 있는 영화의 상영정보를 확인할 수 있습니다. <br>"
+				+ "날짜 및 시간 순서로 정렬되며 상영 정보는 한개씩 선택이 가능합니다.<br>"
+				+ "선택된 상영정보는 오른쪽 마우스를 눌러 상영정보 <a href = http:부가설명>팝업메뉴</a>를 통해"
+				+ "<br>상영 정보를 수정 및 삭제할 수 있습니다.</body></html>");
+				
+		introtxtp[2].setText("<html><body>간식 관리<br> "
+				+ "영화관에서 판매할 매점 메뉴들을 관리 합니다.<br>"
+				+ "중단에 위치한 추가, 수정 버튼중 하나를 선택해 메뉴를 추가 및 선택할 수 있습니다.<br>"
+				+ "\"추가\"를 선택시 메뉴를 추가할 수 있습니다. <br>"
+				+ "종류, 맛, 상표, 가격을 모두 기입해야하며 간식사진 삽입 버튼을 눌러 <br>"
+				+ "메뉴 사진을 추가할 수 있습니다.<br>"
+				+ "수정을 눌러 오른쪽 리스트에서 메뉴를 선택 후 수정, 저장할 수 있습니다.<br>"
+				+ "오른쪽 마우스로 기존 메뉴를 삭제할 수 있습니다.<br>"
+				+ "간식 관리는 <a href = http:부가설명>메인 버튼</a>을 통해 접속할 수 있습니다.</body></html>>");
+
+		introtxtp[3].setText("<html><body>직원 관리<br> 직원관리는 점장님과 부점장님만 이용할 수 있습니다. <br>"
+				+ "하단 신규 버튼을 눌러 직원을 신규등록할 수 있습니다.(아이디 중복 불가)<br>"
+				+ "수정버튼으로 기존 직원의 이름, 비밀번호, 직위를 수정할 수 있습니다.<br>"
+				+ "오른쪽 마우스로 기존 직원 정보를 삭제할 수 있습니다.<br>"
+				+ "직원 관리는 <a href = http:부가설명>메인 버튼</a>을 통해 접속할 수 있습니다.</body></html>");
+
+		
+		introtxtp[4].setText("<html><body>기타 메뉴<br>"
+				+ "InHABOX에서 제공하는 프로그램의 버튼들입니다.<br>"
+				+ "영화 메뉴는 <a href = http:영화정보>영화 리스트</a>를 오른쪽 클릭을 통해 표시됩니다.<br>"
+				+ "상영(회차) 메뉴는 <a href = http:상영정보>상영 리스트</a>를 오른쪽 클릭을 통해 표시됩니다.<br>"
+				+ "메인 버튼은 메인 화면 오른쪽 하단에 위치합니다.<br>"
+				+ "</body></html>");
+				
+		for (int i = 0; i < introP.length; i++) {
+
+			introtxtp[i].putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+			introtxtp[i].setFont(new Font("맑은 고딕", Font.BOLD, 20));
+			
+			StyledDocument docenter = introtxtp[i].getStyledDocument();
+			SimpleAttributeSet center = new SimpleAttributeSet();
+			StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+			docenter.setParagraphAttributes(0, docenter.getLength(), center, false);
+
+		}
+		
+		for (int i = 0; i < introP.length; i++) {
+			introimglbl[i] = new JLabel(introimg[i]);
+
+			introP[i].add(introimglbl[i]);
+
+			introP[i].add(introtxtp[i]);
+			introMainP.add(introP[i], "" + i);
+		}
+		add(introMainP, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+
+		if (obj == btnexit) {
+			dispose();
+		} else if (obj == btnmovieInst) {
+			card.show(introMainP, "0");
+			cardID = 0;
+			btncolorrs();
+			btnmovieInst.setBackground(new Color(155,135,12));
+		} else if (obj == btnScreenInst) {
+			card.show(introMainP, "1");
+			cardID = 1;
+			btncolorrs();
+			btnScreenInst.setBackground(new Color(155,135,12));
+		} else if (obj == btnsnackInst) {
+			card.show(introMainP, "2");
+			cardID = 2;
+			btncolorrs();
+			btnsnackInst.setBackground(new Color(155,135,12));
+
+		} else if (obj == btnstaffInst) {
+			card.show(introMainP, "3");
+			cardID = 3;
+			btncolorrs();
+			btnstaffInst.setBackground(new Color(155,135,12));
+
+		} else if (obj == btnetcInst) {
+			card.show(introMainP, "4");
+			cardID = 4;
+			btncolorrs();
+			btnetcInst.setBackground(new Color(155,135,12));
+
+		} else if (obj == btnpre) {
+			card.previous(introMainP);
+			if(cardID<=0) {
+				cardID = 4;	
+			}else {
+				cardID = cardID - 1;				
+			}
+			btncolorrs();
+			btncolorset(cardID);
+
+
+		} else if (obj == btnNext) {
+			card.next(introMainP);
+			if(cardID>=4) {
+				cardID = 0;	
+			}else {
+				cardID = cardID + 1;				
+			}
+			
+			btncolorrs();
+			btncolorset(cardID);
+
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
+		int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
+
+		this.setLocation((x - pnx), (y - pny));
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		pnx = e.getX();
+		pny = e.getY();
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	public void btncolorrs() {
+		btnmovieInst.setBackground(new Color(255, 183, 0));
+		btnScreenInst.setBackground(new Color(255, 200, 0));
+		btnsnackInst.setBackground(new Color(255, 183, 0));
+		btnstaffInst.setBackground(new Color(255, 200, 0));
+		btnetcInst.setBackground(new Color(255, 183, 0));
+	}
+	public void btncolorset(int a) {
+		switch (a) {
+		case 0:
+			btnmovieInst.setBackground(new Color(155,135,12));
+
+			break;
+		case 1:
+			btnScreenInst.setBackground(new Color(155,135,12));
+
+			break;
+		case 2:
+			btnsnackInst.setBackground(new Color(155,135,12));
+
+			break;
+		case 3:
+			btnstaffInst.setBackground(new Color(155,135,12));
+
+			break;
+		case 4:
+			btnetcInst.setBackground(new Color(155,135,12));
+
+			break;
+
+		default:
+			break;
+		}
+	}
+	class CstmHyperlinkListener implements HyperlinkListener {
+		public void hyperlinkUpdate(HyperlinkEvent evt) {
+			if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+				// url에서 문자열 가져오기
+				String Temp = evt.getURL().toString();
+				
+				// 문자열에서 http:제거 if에서 http:까지 비교한다면 제거할 필요 없음
+				String Result = Temp.substring(5, Temp.length());
+
+				if (Result.equals("부가설명")) {
+					card.show(introMainP, "4");
+					btncolorrs();
+					cardID = 4;
+					btncolorset(cardID);
+					
+				}else if (Result.equals("영화정보")) {
+					card.show(introMainP, "0");
+					btncolorrs();
+					cardID = 0;
+					btncolorset(cardID);
+					
+				}else if(Result.equals("상영정보")) {
+					card.show(introMainP, "1");
+					btncolorrs();
+					cardID = 1;
+					btncolorset(cardID);
+					
+				}
+			}
+		}
+	}
+
+}

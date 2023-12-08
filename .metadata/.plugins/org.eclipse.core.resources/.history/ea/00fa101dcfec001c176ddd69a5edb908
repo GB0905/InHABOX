@@ -1,0 +1,94 @@
+package GGB_201945025;
+
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import LUH_201945022.frame.*;
+import LUH_201945022.set.*;
+
+public class Printing extends JFrame implements ActionListener { 
+	
+	private JLabel text;
+	Container c;
+	MainPanel main;
+	FrameSet fs;
+	private JButton closeBtn;
+	
+	public Printing(MainPanel main) {
+		this.main = main;
+		this.fs = main.getFs();
+
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(300, 120);
+		setTitle("INHA MOVIE");
+		setLocationRelativeTo(null);
+		setLayout(new FlowLayout());
+		c = getContentPane();
+		
+		text = new JLabel();
+		Font font1 = new Font("맑은고딕", Font.ITALIC, 20);
+		text.setFont(font1);
+		text.setHorizontalAlignment(JLabel.CENTER);
+		c.add(text);
+		
+		
+		closeBtn = new JButton("닫기");
+		closeBtn.addActionListener(this);
+		
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			
+			private int count = 0;
+			
+			@Override
+			public void run() {
+				closeBtn.setPreferredSize(new Dimension(100,30));
+				text.setPreferredSize(new Dimension(300,30));
+				count++;
+				if (count == 1) {
+					text.setText("출력 중");
+				} else if (count == 2) {
+					text.setText("출력 중.");
+				} else if (count == 3) {
+					text.setText("출력 중..");
+				} else if (count == 4) {
+					text.setText("출력 중...");
+				} else if (count > 4) {
+					text.setText("티켓이 출력되었습니다.");
+					add(closeBtn);
+				} else {
+					timer.cancel(); // 타이머 종료
+					revalidate();
+				}
+			}
+		};
+		timer.schedule(task, 0, 1000);
+
+		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.dispose();
+		fs = main.getFs();
+		fs.c.remove(fs.mainPanel);
+
+		MainPanel a = new MainPanel(fs);
+		fs.mainPanel = a;
+		fs.c.add(fs.mainPanel);
+
+		fs.setVisible(true);
+
+		revalidate();
+	}
+}

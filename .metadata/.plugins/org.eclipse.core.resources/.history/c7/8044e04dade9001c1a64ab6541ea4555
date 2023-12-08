@@ -1,0 +1,46 @@
+package LUH_201945022.set;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import LUH_201945022.frame.*;
+
+public class FrameSet extends JFrame {
+	public Dimension screenSize = new Dimension(1600, 945);
+	public MainPanel mainPanel;
+	public Dimension topsize = new Dimension(1600, 900 / 20);
+	
+	public FrameSet() {
+		setUndecorated(true);
+		setTitle("INHA MOVIE");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 끄기옵션
+		setSize(screenSize);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		
+		Container c = this.getContentPane();
+		c.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		JPanel top = new JPanel();
+		top.setPreferredSize(topsize);
+		top.setBackground(Color.BLACK);
+		
+		c.add(top);
+		
+		mainPanel = new MainPanel(this);
+		
+		c.add(mainPanel);
+		
+		setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		FrameSet a = new FrameSet();
+	}
+	
+}

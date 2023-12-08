@@ -1,0 +1,61 @@
+package myMethod;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+public class setPanel {
+//	private GridBagConstraints gbc = new GridBagConstraints();
+	
+	// 패널 생성
+	// panelName = setPanel(만들 패널 이름, 붙일 패널 이름, 색, x위치, y위치, x가중치, y가중치, 레이아웃 어떻게 채울지);
+	public JPanel setPanel(JPanel pan,  JPanel mainPan, Color col, int x, int y, double wx, double wy, int fill) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		pan = new JPanel();
+		pan.setBackground(col);
+        setLocation(x, y, wx, wy, fill);
+        mainPan.add(pan, gbc);
+        return pan;
+        }
+	
+	
+	// 배치 위치 설정
+	// setLocation(x위치, y위치, x가중치, y가중치, 레이아웃 어떻게 채울지);
+	private void setLocation(int x, int y, double wx, double wy, int fill) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.weightx = wx;
+		gbc.weighty = wy;
+		gbc.fill = fill;
+	}
+	
+	
+	// 버튼 생성(생성할 버튼 개수)
+	// btnSetName = creBtn(생성할 버튼 개수)
+		private JButton[] creBtn(int num, JButton[] bt) {
+		bt = new JButton[num];
+		for(int i = 0; i < num; i++) {
+			bt[i] = new JButton("영화" + (i + 1));
+		}
+		return bt;
+	}
+	
+	
+	// 버튼 배치
+	// bt[num] = setBtn(버튼 인덱스 넘버, "버튼 텍스트", 붙일 패널, x위치, y위치, x가중치, y가중치, 레이아웃 어떻게 채울지)
+	private JButton setBtn(int num, String text, JPanel pan, int gx, int gy, double wx, double wy, int fill) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		JButton btn = new JButton();
+//		btn = bt[num];
+		btn.setText(text);
+		setLocation(gx, gy, wx, wy, fill);
+		pan.add(btn, gbc);
+//		btn.addActionListener(this);
+		return btn;
+	}
+
+	
+}
